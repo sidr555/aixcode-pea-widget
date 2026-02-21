@@ -1,0 +1,124 @@
+.article {
+  margin: 24px 0;
+  padding: 16px;
+  background: var(--bg-primary, #fff);
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  transition: all 0.2s;
+}
+
+.article:hover {
+  border-color: var(--primary-color, #ff6b35);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.header:hover {
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-color, #ff6b35);
+}
+
+.author {
+  font-size: 14px;
+  color: var(--text-secondary, #666);
+}
+
+.arrow {
+  font-size: 12px;
+  color: var(--text-secondary, #666);
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.body {
+  padding: 16px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background: var(--article-body-bg, #fafafa);
+  border-radius: 0 0 6px 6px;
+}
+
+.markdown {
+  line-height: 1.7;
+  color: var(--text-primary, #333);
+}
+
+.markdown p {
+  margin: 12px 0;
+}
+
+.markdown p:first-child {
+  margin-top: 0;
+}
+
+.markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.loading,
+.error {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-secondary, #666);
+}
+
+.error {
+  color: #f44336;
+}
+
+/* Dark mode */
+:global(body.dark) .article {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+:global(body.dark) .article:hover {
+  border-color: var(--primary-color, #ff7b45);
+}
+
+:global(body.dark) .header:hover {
+  background: #333;
+}
+
+:global(body.dark) .author {
+  color: #999;
+}
+
+:global(body.dark) .arrow {
+  color: #999;
+}
+
+:global(body.dark) .body {
+  background: var(--article-body-bg, #333);
+  border-top-color: #444;
+}
+
+:global(body.dark) .markdown {
+  color: #e0e0e0;
+}
+
+:global(body.dark) .loading,
+:global(body.dark) .error {
+  color: #999;
+}

@@ -1,0 +1,186 @@
+.selector {
+  position: relative;
+  display: inline-block;
+}
+
+.selectorBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-secondary, #fff);
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.selectorBtn:hover {
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.colorPreview {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.selectorText {
+  font-weight: 500;
+  color: var(--text-primary, #333);
+}
+
+.modeIcon {
+  font-size: 16px;
+}
+
+.arrow {
+  font-size: 10px;
+  color: var(--text-secondary, #666);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-primary, #fff);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 8px;
+}
+
+.section {
+  padding: 8px 0;
+}
+
+.section:not(:last-child) {
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.sectionLabel {
+  font-size: 12px;
+  color: var(--text-secondary, #666);
+  padding: 0 8px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modeButtons {
+  display: flex;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.modeBtn {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary, #333);
+  transition: all 0.15s;
+}
+
+.modeBtn:hover {
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.modeBtn.active {
+  background: var(--primary-color, #ff6b35);
+  border-color: var(--primary-color, #ff6b35);
+  color: #fff;
+}
+
+.themeList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.themeBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary, #333);
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.themeBtn:hover {
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.themeBtn.active {
+  background: var(--bg-selected, #fff3e0);
+  border-color: var(--primary-color, #ff6b35);
+}
+
+.themeColor {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Dark mode overrides */
+:global(body.dark) .selectorBtn {
+  background: #2a2a2a;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+:global(body.dark) .selectorBtn:hover {
+  background: #333;
+}
+
+:global(body.dark) .dropdown {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+:global(body.dark) .sectionLabel {
+  color: #999;
+}
+
+:global(body.dark) .modeBtn {
+  background: transparent;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+:global(body.dark) .modeBtn:hover {
+  background: #333;
+}
+
+:global(body.dark) .modeBtn.active {
+  background: var(--primary-color, #ff6b35);
+  border-color: var(--primary-color, #ff6b35);
+  color: #fff;
+}
+
+:global(body.dark) .themeBtn {
+  color: #e0e0e0;
+}
+
+:global(body.dark) .themeBtn:hover {
+  background: #333;
+}
+
+:global(body.dark) .themeBtn.active {
+  background: rgba(255, 107, 53, 0.2);
+  border-color: var(--primary-color, #ff6b35);
+}
