@@ -75,22 +75,28 @@ export const THEMES = {
 
 export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode = 'light' }) {
   const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return defaultTheme;
+    }
     const saved = localStorage.getItem('quest_theme');
     return saved || defaultTheme;
   });
 
   const [mode, setMode] = useState(() => {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return defaultMode;
+    }
     const saved = localStorage.getItem('quest_mode');
     return saved || defaultMode;
   });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    localStorage.setItem('quest_theme', theme);
+    if (typeof window !== "undefined" && window.localStorage) localStorage.setItem('quest_theme', theme);
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem('quest_mode', mode);
+    if (typeof window !== "undefined" && window.localStorage) localStorage.setItem('quest_mode', mode);
     if (typeof document === 'undefined') return;
     document.body.classList.toggle('dark', mode === 'dark');
     document.body.classList.toggle('light', mode === 'light');

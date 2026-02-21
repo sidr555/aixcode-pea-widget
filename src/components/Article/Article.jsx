@@ -14,9 +14,11 @@ function Article({ author, title, content: rawContent }) {
   // Загрузка состояния из localStorage
   useEffect(() => {
     const storageKey = `article_expanded_${title}`;
-    const saved = localStorage.getItem(storageKey);
-    if (saved !== null) {
-      setIsExpanded(saved === 'true');
+    if (typeof window !== "undefined" && window.localStorage) {
+      const saved = localStorage.getItem(storageKey);
+      if (saved !== null) {
+    setIsExpanded(saved === 'true');
+    }
     }
   }, [title]);
 
@@ -25,7 +27,7 @@ function Article({ author, title, content: rawContent }) {
     const newState = !isExpanded;
     setIsExpanded(newState);
     const storageKey = `article_expanded_${title}`;
-    localStorage.setItem(storageKey, String(newState));
+    if (typeof window !== "undefined" && window.localStorage) localStorage.setItem(storageKey, String(newState));
   }, [isExpanded, title]);
 
   if (!content) {
@@ -55,9 +57,11 @@ function Article({ author, title, content: rawContent }) {
 
       {isExpanded && (
         <div className={styles.body}>
-          <ReactMarkdown className={styles.markdown}>
-            {content.body}
-          </ReactMarkdown>
+          <div className={styles.markdown}>
+            <ReactMarkdown>
+              {content.body}
+            </ReactMarkdown>
+          </div>
         </div>
       )}
     </article>

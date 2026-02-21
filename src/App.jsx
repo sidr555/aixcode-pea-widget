@@ -15,12 +15,12 @@ import {
 } from './index.jsx';
 import ThemeSelector from './components/Theme/ThemeSelector';
 import './App.css';
-import ai1 from './art/ai-1.md';
-import ai2 from './art/ai-2.md';
-import ai3 from './art/ai-3.md';
-import ai4 from './art/ai-4.md';
-import ai5 from './art/ai-5.md';
-import ai6 from './art/ai-6.md';
+import ai1 from './art/ai-1.md?raw';
+import ai2 from './art/ai-2.md?raw';
+// import ai3 from './art/ai-3.md';
+// import ai4 from './art/ai-4.md';
+// import ai5 from './art/ai-5.md';
+// import ai6 from './art/ai-6.md';
 
 
 /**
@@ -50,7 +50,7 @@ function App() {
           content={ai2}
         />
 
-        <Article
+      {/*  <Article
           author="Камило Есенин"
           title="Скажи мне, кто я есть!"
           content={ai3}
@@ -72,8 +72,8 @@ function App() {
           author="Убер Пестель"
           title="Твой друг-робот поможет учиться!"
           content={ai6}
-        />
-      </section>
+        />*/}
+      </section> 
 
       {/* ==================== INLINE РЕЖИМ ==================== */}
       <section className="section">

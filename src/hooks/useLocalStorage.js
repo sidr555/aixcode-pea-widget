@@ -10,6 +10,9 @@ export function useLocalStorage(key, initialValue) {
   
   const [storedValue, setStoredValue] = useState(() => {
     try {
+      if (typeof window === 'undefined' || !window.localStorage) {
+        return initialValue;
+      }
       const item = window.localStorage.getItem(fullKey);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
@@ -20,6 +23,9 @@ export function useLocalStorage(key, initialValue) {
 
   const setValue = useCallback((value) => {
     try {
+      if (typeof window === 'undefined' || !window.localStorage) {
+        return;
+      }
       const valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(fullKey, JSON.stringify(valueToStore));

@@ -58,15 +58,17 @@ function SpotTheHallucination({
 
   // Восстановление состояния
   useEffect(() => {
-    const saved = localStorage.getItem(`quest_q_${id}`);
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        if (data.answer) {
-          setSelectedIndices(parseHashString(data.answer).map(h => parseInt(h, 10)));
-          setShowResult(data.status !== 'unanswered');
-        }
-      } catch (e) {}
+    if (typeof window !== "undefined" && window.localStorage) {
+      const saved = localStorage.getItem(`quest_q_${id}`);
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          if (data.answer) {
+            setSelectedIndices(parseHashString(data.answer).map(h => parseInt(h, 10)));
+            setShowResult(data.status !== 'unanswered');
+          }
+        } catch (e) {}
+      }
     }
   }, [id]);
 
