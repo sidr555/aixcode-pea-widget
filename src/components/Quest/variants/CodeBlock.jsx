@@ -20,6 +20,10 @@ function CodeBlock({
   const { placeholder = 'Введите код', language = 'javascript' } = options || {};
   const [value, setValue] = useState('');
 
+  const resetState = useCallback(() => {
+    setValue('');
+  }, []);
+
   const checkAnswer = useCallback((answer) => {
     const normalizedCorrect = normalizeAnswer(correctAnswer);
     const normalizedUser = normalizeAnswer(answer);
@@ -77,6 +81,7 @@ function CodeBlock({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

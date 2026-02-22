@@ -20,6 +20,10 @@ function Text({
   const { placeholder = 'Введите ответ', rows = 3 } = options || {};
   const [value, setValue] = useState('');
 
+  const resetState = useCallback(() => {
+    setValue('');
+  }, []);
+
   const checkAnswer = useCallback((answer) => {
     const normalizedCorrect = normalizeAnswer(correctAnswer);
     const normalizedUser = normalizeAnswer(answer);
@@ -73,6 +77,7 @@ function Text({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

@@ -34,6 +34,11 @@ function PromptBuilder({
   const [insertedBlocks, setInsertedBlocks] = useState([]);
   const [textareaValue, setTextareaValue] = useState('');
 
+  const resetState = useCallback(() => {
+    setInsertedBlocks([]);
+    setTextareaValue('');
+  }, []);
+
   // Синхронизация textarea и insertedBlocks
   useEffect(() => {
     // При изменении textarea проверяем, какие блоки ещё есть в тексте
@@ -165,6 +170,7 @@ function PromptBuilder({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

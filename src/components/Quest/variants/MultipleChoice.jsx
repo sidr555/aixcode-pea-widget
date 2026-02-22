@@ -20,6 +20,10 @@ function MultipleChoice({
   const { multiple = false, items = [] } = options || {};
   const [selected, setSelected] = useState([]);
 
+  const resetState = useCallback(() => {
+    setSelected([]);
+  }, []);
+
   const checkAnswer = useCallback((answer) => {
     if (multiple) {
       const correctParts = parseHashString(correctAnswer).sort();
@@ -101,6 +105,7 @@ function MultipleChoice({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

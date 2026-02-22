@@ -235,8 +235,6 @@
 }
 
 .matchItem.matched {
-  background: var(--bg-success);
-  border-color: #4caf50;
   cursor: default;
 }
 
@@ -258,14 +256,36 @@
 }
 
 .dropZone.hasMatch {
-  background: var(--bg-success);
   border-style: solid;
-  border-color: #4caf50;
 }
 
 .matchIndicator {
   color: #4caf50;
   font-weight: bold;
+}
+
+.resultCorrectIcon,
+.resultIncorrectIcon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.resultCorrectIcon {
+  background: #4caf50;
+  color: #fff;
+}
+
+.resultIncorrectIcon {
+  background: #f44336;
+  color: #fff;
 }
 
 .correctPairs {

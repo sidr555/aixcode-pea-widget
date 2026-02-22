@@ -1,9 +1,9 @@
 .test {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
   margin: 16px 0;
-  background: #fff;
+  background: var(--bg-primary);
 }
 
 .header {
@@ -12,7 +12,7 @@
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .progress {
@@ -28,7 +28,7 @@
 .results {
   margin-top: 24px;
   padding: 16px;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   border-radius: 8px;
 }
 
@@ -42,7 +42,7 @@
 .resultHeader h3 {
   margin: 0;
   font-size: 18px;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .percentage {
@@ -65,12 +65,12 @@
 }
 
 .statLabel {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .statValue {
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .showAnswersBtn {
@@ -112,18 +112,18 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   border-radius: 4px;
   font-size: 14px;
 }
 
 .timerFinished {
-  background: #e8f5e9;
+  background: var(--bg-success);
   color: #4caf50;
 }
 
 .timerWarning {
-  background: #fff3e0;
+  background: var(--bg-warning);
   color: #f57c00;
 }
 
@@ -138,5 +138,5 @@
 
 .timerStatus {
   font-size: 12px;
-  color: #999;
+  color: var(--text-secondary);
 }

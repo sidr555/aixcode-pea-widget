@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useMemo } from 'react';
+import { useState, useCallback, memo, useMemo, useEffect } from 'react';
 import {
   DndContext,
   PointerSensor,
@@ -14,67 +14,29 @@ import { hash } from '../../../utils/hash';
 import { normalizeAnswer } from '../../../utils/normalize';
 import styles from './variants.module.css';
 
-/**
- * DraggableItem — перетаскиваемый элемент (левая колонка)
- */
-function DraggableItem({ id, item, isMatched }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+const PAIR_COLORS = [
+  '#e06c75', '#e5c07b', '#61afef', '#c678dd',
+  '#56b6c2', '#d19a66', '#98c379', '#be5046',
+  '#ff6b9d', '#20b2aa', '#dda0dd', '#f0e68c',
+  '#87ceeb', '#ffa07a', '#00ced1', '#ba55d3',
+];
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : isMatched ? 0.4 : 1,
-  };
+function shuffleArray(arr) {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`${styles.matchItem} ${isMatched ? styles.matched : ''} ${isDragging ? styles.dragging : ''}`}
-      {...attributes}
-      {...listeners}
-    >
-      {item}
-    </div>
-  );
+function assignColors(count) {
+  const pool = shuffleArray(PAIR_COLORS);
+  return pool.slice(0, count);
 }
 
 /**
- * DropZone — зона для сброса (правая колонка)
- */
-function DropZone({ id, item, matchedWith, onDrop, isOver }) {
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const dragId = e.dataTransfer.getData('text/plain');
-    onDrop(dragId, id);
-  };
-
-  return (
-    <div
-      className={`${styles.dropZone} ${matchedWith ? styles.hasMatch : ''} ${isOver ? styles.dragOver : ''}`}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      data-drop-id={id}
-    >
-      <span className={styles.dropItemText}>{item}</span>
-      {matchedWith && <span className={styles.matchIndicator}>✓</span>}
-    </div>
-  );
-}
-
-/**
- * MatchPairs — соединить пары (термин ↔ определение)
+ * MatchPairs — соединить пары (термин - определение)
  */
 function MatchPairs({
   id,
@@ -87,45 +49,22 @@ function MatchPairs({
   onStatusChange
 }) {
   const { pairs = [] } = options || {};
-  
-  // Перемешиваем правую колонку
-  const [shuffledRight] = useState(() => {
-    const rightItems = pairs.map(p => p.right);
-    const shuffled = [...rightItems];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  });
 
-  const [matches, setMatches] = useState({}); // { leftId: rightId }
+  const [shuffledRight, setShuffledRight] = useState(() => shuffleArray(pairs.map(p => p.right)));
+  const [matches, setMatches] = useState({});
   const [draggingId, setDraggingId] = useState(null);
+
+  const [pairColors, setPairColors] = useState(() => assignColors(pairs.length));
+  const [colorAssignment, setColorAssignment] = useState({});
+  const [nextColorIdx, setNextColorIdx] = useState(0);
 
   const sensors = useSensors(
     useSensor(PointerSensor)
   );
 
-  // Хэш правильных пар для сравнения
   const correctPairsHash = useMemo(() => {
     return pairs.map(p => `${hash(normalizeAnswer(p.left))}|${hash(normalizeAnswer(p.right))}`).join('||');
   }, [pairs]);
-
-  const handleDragStart = useCallback((event) => {
-    setDraggingId(event.active.id);
-  }, []);
-
-  const handleDragEnd = useCallback((event) => {
-    const { active, over } = event;
-    setDraggingId(null);
-
-    if (over) {
-      setMatches(prev => ({
-        ...prev,
-        [active.id]: over.id
-      }));
-    }
-  }, []);
 
   const handleNativeDragStart = useCallback((e, leftId) => {
     e.dataTransfer.setData('text/plain', leftId);
@@ -133,27 +72,60 @@ function MatchPairs({
   }, []);
 
   const handleNativeDrop = useCallback((leftId, rightId) => {
-    setMatches(prev => ({
-      ...prev,
-      [leftId]: rightId
-    }));
+    const occupiedBy = Object.entries(matches).find(([_, rId]) => rId === rightId)?.[0];
+    if (occupiedBy && occupiedBy !== leftId) {
+      setDraggingId(null);
+      return;
+    }
+
+    setMatches(prev => {
+      const next = { ...prev };
+      next[leftId] = rightId;
+      return next;
+    });
+
+    setColorAssignment(prev => {
+      if (prev[leftId] !== undefined) return prev;
+      return { ...prev, [leftId]: nextColorIdx };
+    });
+    setNextColorIdx(prev => {
+      if (colorAssignment[leftId] !== undefined) return prev;
+      return prev + 1;
+    });
+
     setDraggingId(null);
-  }, []);
+  }, [matches, colorAssignment, nextColorIdx]);
 
   const checkAnswer = useCallback((answer) => {
     return answer === correctAnswer;
   }, [correctAnswer]);
 
-  const renderAnswer = useCallback(({ onSubmit }) => {
+  const getPairColor = useCallback((leftId) => {
+    const idx = colorAssignment[leftId];
+    if (idx === undefined) return undefined;
+    return pairColors[idx % pairColors.length];
+  }, [colorAssignment, pairColors]);
+
+  // Вычисляем результаты для каждой пары (для отображения после ответа)
+  const getPairResults = useCallback(() => {
+    return pairs.map(p => {
+      const leftId = `left-${p.left}`;
+      const matchedRightId = matches[leftId];
+      const matchedRight = shuffledRight.find((_, idx) => `right-${idx}` === matchedRightId);
+      const isCorrect = matchedRight && normalizeAnswer(matchedRight) === normalizeAnswer(p.right);
+      return { leftId, matchedRightId, isCorrect };
+    });
+  }, [pairs, matches, shuffledRight]);
+
+  const renderAnswer = useCallback(({ onSubmit, resetKey }) => {
     const handleSubmit = () => {
-      // Формируем хэш ответа пользователя
       const userPairsHash = pairs.map(p => {
         const leftId = `left-${p.left}`;
         const matchedRightId = matches[leftId];
         const matchedRight = shuffledRight.find((_, idx) => `right-${idx}` === matchedRightId);
         return `${hash(normalizeAnswer(p.left))}|${hash(normalizeAnswer(matchedRight || ''))}`;
       }).join('||');
-      
+
       onSubmit(userPairsHash);
     };
 
@@ -162,19 +134,23 @@ function MatchPairs({
     return (
       <div className={styles.matchPairs}>
         <p className={styles.hint}>Перетащите термины к соответствующим определениям:</p>
-        
+
         <div className={styles.matchContainer}>
-          {/* Левая колонка - термины */}
           <div className={styles.matchColumn}>
-            {pairs.map((pair, idx) => {
+            {pairs.map((pair) => {
               const leftId = `left-${pair.left}`;
               const isMatched = !!matches[leftId];
+              const color = getPairColor(leftId);
+              const colorStyle = isMatched && color
+                ? { borderColor: color, backgroundColor: `${color}22` }
+                : {};
               return (
                 <div
                   key={leftId}
                   draggable
                   onDragStart={(e) => handleNativeDragStart(e, leftId)}
                   className={`${styles.matchItem} ${isMatched ? styles.matched : ''} ${draggingId === leftId ? styles.dragging : ''}`}
+                  style={colorStyle}
                 >
                   {pair.left}
                 </div>
@@ -182,16 +158,27 @@ function MatchPairs({
             })}
           </div>
 
-          {/* Правая колонка - определения */}
           <div className={styles.matchColumn}>
             {shuffledRight.map((item, idx) => {
               const rightId = `right-${idx}`;
-              const matchedWith = Object.entries(matches).find(([_, rId]) => rId === rightId)?.[0];
+              const matchedLeftId = Object.entries(matches).find(([_, rId]) => rId === rightId)?.[0];
+              const color = matchedLeftId ? getPairColor(matchedLeftId) : undefined;
+              const colorStyle = matchedLeftId && color
+                ? { borderColor: color, backgroundColor: `${color}22`, borderStyle: 'solid' }
+                : {};
               return (
                 <div
                   key={rightId}
-                  className={`${styles.dropZone} ${matchedWith ? styles.hasMatch : ''}`}
-                  onDragOver={(e) => e.preventDefault()}
+                  className={`${styles.dropZone} ${matchedLeftId ? styles.hasMatch : ''}`}
+                  style={colorStyle}
+                  onDragOver={(e) => {
+                    const occupied = Object.values(matches).includes(rightId);
+                    if (occupied) {
+                      const dragLeftId = draggingId;
+                      if (matches[dragLeftId] !== rightId) return;
+                    }
+                    e.preventDefault();
+                  }}
                   onDrop={(e) => {
                     e.preventDefault();
                     const leftId = e.dataTransfer.getData('text/plain');
@@ -199,7 +186,7 @@ function MatchPairs({
                   }}
                 >
                   <span>{item}</span>
-                  {matchedWith && <span className={styles.matchIndicator}>✓</span>}
+                  {matchedLeftId && <span className={styles.matchIndicator}>✓</span>}
                 </div>
               );
             })}
@@ -216,20 +203,103 @@ function MatchPairs({
         </button>
       </div>
     );
-  }, [pairs, shuffledRight, matches, draggingId, handleNativeDragStart, handleNativeDrop]);
+  }, [pairs, shuffledRight, matches, draggingId, handleNativeDragStart, handleNativeDrop, getPairColor]);
+
+  const [correctColors] = useState(() => assignColors(pairs.length));
 
   const renderCorrectAnswer = useCallback(() => {
+    const results = getPairResults();
+
+    // Построим маппинг rightId -> результат для правой колонки
+    const rightResults = {};
+    results.forEach(r => {
+      if (r.matchedRightId) {
+        rightResults[r.matchedRightId] = r.isCorrect;
+      }
+    });
+
+    // Цвета бордеров для неугаданных пар
+    let wrongColorIdx = 0;
+    const wrongColors = {};
+    results.forEach((r, idx) => {
+      if (!r.isCorrect) {
+        wrongColors[r.leftId] = correctColors[wrongColorIdx % correctColors.length];
+        wrongColorIdx++;
+      }
+    });
+
     return (
-      <div className={styles.correctPairs}>
-        {pairs.map((pair, idx) => (
-          <div key={idx} className={styles.correctPair}>
-            <span className={styles.pairLeft}>{pair.left}</span>
-            <span className={styles.pairArrow}>→</span>
-            <span className={styles.pairRight}>{pair.right}</span>
+      <div className={styles.matchPairs}>
+        <div className={styles.matchContainer}>
+          <div className={styles.matchColumn}>
+            {pairs.map((pair) => {
+              const leftId = `left-${pair.left}`;
+              const result = results.find(r => r.leftId === leftId);
+              const isCorrect = result?.isCorrect;
+              const color = getPairColor(leftId);
+              const wrongColor = wrongColors[leftId];
+              const itemStyle = isCorrect && color
+                ? { borderColor: color, backgroundColor: `${color}22` }
+                : wrongColor
+                  ? { borderColor: wrongColor, backgroundColor: `${wrongColor}15` }
+                  : {};
+              return (
+                <div
+                  key={leftId}
+                  className={`${styles.matchItem} ${styles.matched}`}
+                  style={itemStyle}
+                >
+                  <span className={isCorrect ? styles.resultCorrectIcon : styles.resultIncorrectIcon}>
+                    {isCorrect ? '✓' : '✗'}
+                  </span>
+                  {pair.left}
+                </div>
+              );
+            })}
           </div>
-        ))}
+
+          <div className={styles.matchColumn}>
+            {shuffledRight.map((item, idx) => {
+              const rightId = `right-${idx}`;
+              const matchedLeftId = Object.entries(matches).find(([_, rId]) => rId === rightId)?.[0];
+              const result = matchedLeftId ? results.find(r => r.leftId === matchedLeftId) : null;
+              const isCorrect = result?.isCorrect;
+              const color = matchedLeftId ? getPairColor(matchedLeftId) : undefined;
+              const wrongColor = matchedLeftId ? wrongColors[matchedLeftId] : undefined;
+              const itemStyle = isCorrect && color
+                ? { borderColor: color, backgroundColor: `${color}22`, borderStyle: 'solid' }
+                : wrongColor
+                  ? { borderColor: wrongColor, backgroundColor: `${wrongColor}15`, borderStyle: 'solid' }
+                  : {};
+              return (
+                <div
+                  key={rightId}
+                  className={`${styles.dropZone} ${matchedLeftId ? styles.hasMatch : ''}`}
+                  style={itemStyle}
+                >
+                  {matchedLeftId && (
+                    <span className={isCorrect ? styles.resultCorrectIcon : styles.resultIncorrectIcon}>
+                      {isCorrect ? '✓' : '✗'}
+                    </span>
+                  )}
+                  <span>{item}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     );
+  }, [pairs, matches, shuffledRight, getPairColor, getPairResults, correctColors]);
+
+  // Сброс состояния при resetKey
+  const resetState = useCallback(() => {
+    setMatches({});
+    setDraggingId(null);
+    setColorAssignment({});
+    setNextColorIdx(0);
+    setPairColors(assignColors(pairs.length));
+    setShuffledRight(shuffleArray(pairs.map(p => p.right)));
   }, [pairs]);
 
   return (
@@ -244,6 +314,7 @@ function MatchPairs({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

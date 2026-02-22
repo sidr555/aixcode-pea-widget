@@ -132,7 +132,7 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
     } else {
       root.style.setProperty('--bg-primary', '#2a2a2a');
       root.style.setProperty('--bg-secondary', '#333');
-      root.style.setProperty('--bg-input', '#3d3d3d');
+      root.style.setProperty('--bg-input', '#404040');
       root.style.setProperty('--bg-hover', '#3a3a3a');
       root.style.setProperty('--bg-selected', 'rgba(255, 107, 53, 0.2)');
       root.style.setProperty('--bg-success', 'rgba(76, 175, 80, 0.2)');

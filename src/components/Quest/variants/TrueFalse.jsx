@@ -17,6 +17,10 @@ function TrueFalse({
 }) {
   const [selected, setSelected] = useState(null);
 
+  const resetState = useCallback(() => {
+    setSelected(null);
+  }, []);
+
   const normalizedCorrect = correctAnswer === 'true' || correctAnswer === true
     ? hash('true')
     : correctAnswer === 'false' || correctAnswer === false
@@ -88,6 +92,7 @@ function TrueFalse({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

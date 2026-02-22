@@ -19,11 +19,13 @@ function Quest({
   renderAnswer,        // Функция рендеринга вариантов ответа
   renderCorrectAnswer, // Функция рендеринга правильного ответа
   checkAnswer,         // Функция проверки ответа
-  onStatusChange       // Callback при изменении статуса (из теста)
+  onStatusChange,      // Callback при изменении статуса (из теста)
+  onReset              // Callback для сброса внутреннего состояния варианта
 }) {
   const { state, setAnswer, reset } = useQuestStorage(id);
   const [isExpanded, setIsExpanded] = useState(false);
   const [userAnswer, setUserAnswer] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
 
   // Интеграция с тестом
   const { isInTest, showAnswers, onStatusChange: testOnStatusChange } = useTestQuestion(id, points);
@@ -67,8 +69,10 @@ function Quest({
     reset();
     setUserAnswer(null);
     setIsExpanded(true);
+    setResetKey(k => k + 1);
+    onReset?.();
     onStatusChange?.('unanswered', 0);
-  }, [reset, onStatusChange]);
+  }, [reset, onReset, onStatusChange]);
 
   const showExplanation = alwaysShowExplanation || state.status === 'incorrect';
 
@@ -98,7 +102,7 @@ function Quest({
         {/* Развёрнутый блок с вариантами */}
         {isExpanded && state.status === 'unanswered' && (
           <div className={styles.content}>
-            {renderAnswer?.({ onSubmit: handleSubmit, userAnswer, setUserAnswer }) || children}
+            {renderAnswer?.({ onSubmit: handleSubmit, userAnswer, setUserAnswer, resetKey }) || children}
           </div>
         )}
 

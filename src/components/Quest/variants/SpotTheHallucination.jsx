@@ -56,6 +56,11 @@ function SpotTheHallucination({
   const [selectedIndices, setSelectedIndices] = useState([]);
   const [showResult, setShowResult] = useState(false);
 
+  const resetState = useCallback(() => {
+    setSelectedIndices([]);
+    setShowResult(false);
+  }, []);
+
   // Восстановление состояния
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -168,6 +173,7 @@ function SpotTheHallucination({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }

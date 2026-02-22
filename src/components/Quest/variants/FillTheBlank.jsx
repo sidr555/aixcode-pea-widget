@@ -20,6 +20,10 @@ function FillTheBlank({
   const { placeholder = 'Введите ответ' } = options || {};
   const [value, setValue] = useState('');
 
+  const resetState = useCallback(() => {
+    setValue('');
+  }, []);
+
   const checkAnswer = useCallback((answer) => {
     const normalizedCorrect = normalizeAnswer(correctAnswer);
     const normalizedUser = normalizeAnswer(answer);
@@ -81,6 +85,7 @@ function FillTheBlank({
       renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
+      onReset={resetState}
     />
   );
 }
