@@ -50,9 +50,14 @@ function ArticleReader({ body }) {
   const [selectedSigIdx, setSelectedSigIdx] = useState(null);
   const [wordCount, setWordCount] = useState(null);
 
-  const { time, start, reset: resetTimer } = useTimer('60s', () => {
+  const { time, start, stop, reset: resetTimer } = useTimer('60s', () => {
     setPhase('picking');
   });
+
+  const handleStopEarly = useCallback(() => {
+    stop();
+    setPhase('picking');
+  }, [stop]);
 
   const tokens = useMemo(() => tokenize(body), [body]);
 
@@ -131,7 +136,7 @@ function ArticleReader({ body }) {
 
   // Прогрессбар (отдельно, ниже заголовка)
   const progressBar = phase === 'reading' ? (
-    <div className={styles.readerTimer}>
+    <div className={styles.readerTimer} onClick={handleStopEarly} title="Нажмите, чтобы завершить чтение">
       <div className={styles.readerTimerBar}>
         <div
           className={styles.readerTimerFill}
