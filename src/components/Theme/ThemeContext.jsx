@@ -120,6 +120,11 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
       root.style.setProperty('--bg-secondary', '#fafafa');
       root.style.setProperty('--bg-hover', '#f5f5f5');
       root.style.setProperty('--bg-selected', '#fff3e0');
+      root.style.setProperty('--bg-success', '#e8f5e9');
+      root.style.setProperty('--bg-warning', '#fff3e0');
+      root.style.setProperty('--bg-word-selected', '#ffecb3');
+      root.style.setProperty('--bg-word-correct', '#c8e6c9');
+      root.style.setProperty('--bg-word-incorrect', '#ffcdd2');
       root.style.setProperty('--text-primary', '#333');
       root.style.setProperty('--text-secondary', '#666');
       root.style.setProperty('--border-color', '#e0e0e0');
@@ -128,6 +133,11 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
       root.style.setProperty('--bg-secondary', '#333');
       root.style.setProperty('--bg-hover', '#3a3a3a');
       root.style.setProperty('--bg-selected', 'rgba(255, 107, 53, 0.2)');
+      root.style.setProperty('--bg-success', 'rgba(76, 175, 80, 0.2)');
+      root.style.setProperty('--bg-warning', 'rgba(255, 152, 0, 0.2)');
+      root.style.setProperty('--bg-word-selected', 'rgba(255, 193, 179, 0.3)');
+      root.style.setProperty('--bg-word-correct', 'rgba(129, 199, 132, 0.3)');
+      root.style.setProperty('--bg-word-incorrect', 'rgba(229, 115, 115, 0.3)');
       root.style.setProperty('--text-primary', '#e0e0e0');
       root.style.setProperty('--text-secondary', '#999');
       root.style.setProperty('--border-color', '#444');

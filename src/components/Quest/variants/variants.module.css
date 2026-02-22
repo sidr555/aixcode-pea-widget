@@ -224,7 +224,7 @@
 }
 
 .matchItem.matched {
-  background: #e8f5e9;
+  background: var(--bg-success);
   border-color: #4caf50;
   cursor: default;
 }
@@ -247,7 +247,7 @@
 }
 
 .dropZone.hasMatch {
-  background: #e8f5e9;
+  background: var(--bg-success);
   border-style: solid;
   border-color: #4caf50;
 }
@@ -268,7 +268,7 @@
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
-  background: #e8f5e9;
+  background: var(--bg-success);
   border-radius: 4px;
 }
 
@@ -324,7 +324,7 @@
 .correctCode {
   margin: 0;
   padding: 16px;
-  background: #e8f5e9;
+  background: var(--bg-success);
   border-radius: 4px;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
@@ -361,23 +361,23 @@
 }
 
 .wordToken:hover {
-  background: #fff3e0;
+  background: var(--bg-warning);
 }
 
 .selectedWord {
-  background: #ffecb3;
+  background: var(--bg-word-selected);
   text-decoration: line-through;
   text-decoration-color: #f44336;
 }
 
 .correctWord {
-  background: #c8e6c9;
+  background: var(--bg-word-correct);
   text-decoration: line-through;
   text-decoration-color: #4caf50;
 }
 
 .incorrectWord {
-  background: #ffcdd2;
+  background: var(--bg-word-incorrect);
   text-decoration: line-through;
   text-decoration-color: #f44336;
 }
@@ -489,7 +489,7 @@
 
 .correctPrompt {
   padding: 12px;
-  background: #e8f5e9;
+  background: var(--bg-success);
   border-radius: 4px;
 }
 
