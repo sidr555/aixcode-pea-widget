@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '../Theme/ThemeContext';
 import { parseArticle } from '../../utils/parseArticle';
+import ArticleReader from './ArticleReader';
 import styles from './Article.module.css';
 
 function Article({ author, title, content: rawContent }) {
@@ -54,6 +55,8 @@ function Article({ author, title, content: rawContent }) {
         </div>
         <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
       </button>
+
+      <ArticleReader body={content.body} />
 
       {isExpanded && (
         <div className={styles.body}>

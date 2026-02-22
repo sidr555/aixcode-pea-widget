@@ -122,3 +122,119 @@
 :global(body.dark) .error {
   color: #999;
 }
+
+/* ===== ArticleReader ===== */
+.reader {
+  margin-top: 8px;
+}
+
+.readerBtn {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.readerBtn:hover {
+  opacity: 0.85;
+}
+
+/* Таймер */
+.readerTimer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.readerTimerBar {
+  flex: 1;
+  height: 6px;
+  background: var(--border-color, #e0e0e0);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.readerTimerFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s linear;
+}
+
+.readerTimerText {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary, #333);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* Фаза выбора слова */
+.readerPickLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary, #666);
+  padding: 8px 0;
+}
+
+/* Результат */
+.readerResult {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.readerResultCount {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.readerResetBtn {
+  background: none;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-secondary, #666);
+  transition: all 0.15s;
+}
+
+.readerResetBtn:hover {
+  background: var(--bg-hover, #f5f5f5);
+  color: var(--text-primary, #333);
+}
+
+/* Тело текста (для чтения) */
+.readerBody {
+  margin-top: 12px;
+  padding: 16px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  line-height: 1.8;
+  color: var(--text-primary, #333);
+}
+
+/* Слова */
+.readerWord {
+  border-radius: 3px;
+  transition: background-color 0.15s;
+}
+
+.readerWordClickable {
+  cursor: pointer;
+}
+
+.readerWordClickable:hover {
+  background: var(--bg-hover, #f5f5f5);
+}
+
+.readerWordSelected {
+  border-radius: 3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+}
