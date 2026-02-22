@@ -16,23 +16,26 @@ function pluralWords(n) {
 }
 
 /**
- * Токенизирует текст статьи в массив слов с позициями
- * Возвращает [{text, index, isWord}] где isWord = слово > 2 букв
+ * Токенизирует текст, назначая индексы только значимым словам (> 2 букв).
+ * Возвращает [{text, sigIdx, isSignificant}]
+ * sigIdx — порядковый номер среди значимых слов (0-based), или -1
  */
 function tokenize(text) {
   const tokens = [];
-  // Разбиваем по границам слов, сохраняя пробелы и пунктуацию
   const parts = text.split(/(\s+)/);
-  let wordIdx = 0;
+  let sigIdx = 0;
   for (const part of parts) {
     if (/^\s+$/.test(part)) {
-      tokens.push({ text: part, index: -1, isWord: false });
+      tokens.push({ text: part, sigIdx: -1, isSignificant: false });
     } else {
-      // Слово может содержать пунктуацию — выделяем буквенную часть
-      const letters = part.replace(/[^a-zа-яёA-ZА-ЯЁ0-9]/g, '');
-      const isWord = letters.length > 2;
-      tokens.push({ text: part, index: wordIdx, isWord });
-      wordIdx++;
+      const letters = part.replace(/[^a-zа-яёA-ZА-ЯЁ]/g, '');
+      const isSignificant = letters.length > 2;
+      tokens.push({
+        text: part,
+        sigIdx: isSignificant ? sigIdx : -1,
+        isSignificant,
+      });
+      if (isSignificant) sigIdx++;
     }
   }
   return tokens;
@@ -44,52 +47,48 @@ function tokenize(text) {
 function ArticleReader({ body }) {
   const { colors } = useTheme();
   const [phase, setPhase] = useState('idle'); // idle | reading | picking | done
-  const [selectedWordIdx, setSelectedWordIdx] = useState(null);
+  const [selectedSigIdx, setSelectedSigIdx] = useState(null);
   const [wordCount, setWordCount] = useState(null);
 
-  const { time, isFinished, start, reset: resetTimer } = useTimer('60s', () => {
+  const { time, start, reset: resetTimer } = useTimer('60s', () => {
     setPhase('picking');
   });
 
   const tokens = useMemo(() => tokenize(body), [body]);
-
-  // Считаем слова > 2 букв (для подсчёта)
-  const significantWords = useMemo(() => {
-    return tokens.filter(t => t.isWord);
-  }, [tokens]);
 
   const handleStart = useCallback(() => {
     setPhase('reading');
     start();
   }, [start]);
 
-  const handleWordClick = useCallback((wordIndex) => {
+  const handleWordClick = useCallback((sigIdx) => {
     if (phase !== 'picking') return;
 
-    if (selectedWordIdx === wordIndex) {
-      // Повторный клик — завершаем
-      const count = significantWords.filter(w => w.index <= wordIndex).length;
-      setWordCount(count);
+    if (selectedSigIdx === sigIdx) {
+      // Повторный клик — завершаем. sigIdx 0-based, значит кол-во = sigIdx + 1
+      setWordCount(sigIdx + 1);
       setPhase('done');
     } else {
-      setSelectedWordIdx(wordIndex);
+      setSelectedSigIdx(sigIdx);
     }
-  }, [phase, selectedWordIdx, significantWords]);
+  }, [phase, selectedSigIdx]);
 
   const handleReset = useCallback(() => {
     setPhase('idle');
-    setSelectedWordIdx(null);
+    setSelectedSigIdx(null);
     setWordCount(null);
     resetTimer();
   }, [resetTimer]);
 
-  // Кнопка/таймер/результат
-  const renderControl = () => {
+  const isExpanded = phase === 'reading' || phase === 'picking';
+
+  // Контрол для размещения в заголовке
+  const control = (() => {
     if (phase === 'idle') {
       return (
         <button
           className={styles.readerBtn}
-          onClick={handleStart}
+          onClick={(e) => { e.stopPropagation(); handleStart(); }}
           type="button"
           style={{ backgroundColor: colors.primary }}
         >
@@ -99,25 +98,12 @@ function ArticleReader({ body }) {
     }
 
     if (phase === 'reading') {
-      return (
-        <div className={styles.readerTimer}>
-          <div className={styles.readerTimerBar}>
-            <div
-              className={styles.readerTimerFill}
-              style={{
-                width: `${(time / 60) * 100}%`,
-                backgroundColor: colors.primary,
-              }}
-            />
-          </div>
-          <span className={styles.readerTimerText}>{formatTime(time)}</span>
-        </div>
-      );
+      return null; // прогрессбар рендерится отдельно
     }
 
     if (phase === 'picking') {
       return (
-        <div className={styles.readerPickLabel}>
+        <div className={styles.readerPickLabel} onClick={(e) => e.stopPropagation()}>
           Кликни слово
         </div>
       );
@@ -125,13 +111,13 @@ function ArticleReader({ body }) {
 
     if (phase === 'done') {
       return (
-        <div className={styles.readerResult}>
+        <div className={styles.readerResult} onClick={(e) => e.stopPropagation()}>
           <span className={styles.readerResultCount} style={{ color: colors.primary }}>
             {pluralWords(wordCount)}
           </span>
           <button
             className={styles.readerResetBtn}
-            onClick={handleReset}
+            onClick={(e) => { e.stopPropagation(); handleReset(); }}
             type="button"
           >
             ↻
@@ -139,39 +125,60 @@ function ArticleReader({ body }) {
         </div>
       );
     }
-  };
 
-  const isExpanded = phase === 'reading' || phase === 'picking';
+    return null;
+  })();
 
-  return (
-    <div className={styles.reader}>
-      {renderControl()}
-
-      {isExpanded && (
-        <div className={styles.readerBody}>
-          {tokens.map((token, i) => {
-            if (!token.isWord) {
-              return <span key={i}>{token.text}</span>;
-            }
-
-            const canClick = phase === 'picking';
-            const isSelected = selectedWordIdx === token.index;
-
-            return (
-              <span
-                key={i}
-                className={`${styles.readerWord} ${canClick ? styles.readerWordClickable : ''} ${isSelected ? styles.readerWordSelected : ''}`}
-                style={isSelected ? { backgroundColor: colors.primary, color: '#fff' } : undefined}
-                onClick={canClick ? () => handleWordClick(token.index) : undefined}
-              >
-                {token.text}
-              </span>
-            );
-          })}
-        </div>
-      )}
+  // Прогрессбар (отдельно, ниже заголовка)
+  const progressBar = phase === 'reading' ? (
+    <div className={styles.readerTimer}>
+      <div className={styles.readerTimerBar}>
+        <div
+          className={styles.readerTimerFill}
+          style={{
+            width: `${(time / 60) * 100}%`,
+            backgroundColor: colors.primary,
+          }}
+        />
+      </div>
+      <span className={styles.readerTimerText}>{formatTime(time)}</span>
     </div>
-  );
+  ) : null;
+
+  const bodyContent = isExpanded ? (
+    <div className={styles.readerBody}>
+      {tokens.map((token, i) => {
+        if (!token.isSignificant) {
+          return <span key={i}>{token.text}</span>;
+        }
+
+        const canClick = phase === 'picking';
+        const isSelected = selectedSigIdx === token.sigIdx;
+
+        return (
+          <span
+            key={i}
+            className={`${styles.readerWord} ${canClick ? styles.readerWordClickable : ''} ${isSelected ? styles.readerWordSelected : ''}`}
+            style={isSelected ? { backgroundColor: colors.primary, color: '#fff' } : undefined}
+            onClick={canClick ? () => handleWordClick(token.sigIdx) : undefined}
+          >
+            {token.text}
+          </span>
+        );
+      })}
+    </div>
+  ) : null;
+
+  return { control, progressBar, bodyContent };
 }
 
-export default memo(ArticleReader);
+function ArticleReaderWrapper({ body }) {
+  return null; // не используется напрямую
+}
+
+// Экспортируем хук-подобную функцию
+export function useArticleReader(body) {
+  return ArticleReader({ body });
+}
+
+export default memo(ArticleReaderWrapper);

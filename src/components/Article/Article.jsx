@@ -2,15 +2,17 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '../Theme/ThemeContext';
 import { parseArticle } from '../../utils/parseArticle';
-import ArticleReader from './ArticleReader';
+import { useArticleReader } from './ArticleReader';
 import styles from './Article.module.css';
 
 function Article({ author, title, content: rawContent }) {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   // Парсим содержимое при получении
   const content = rawContent ? parseArticle(rawContent) : null;
+
+  const { control, progressBar, bodyContent } = useArticleReader(content?.body || '');
 
   // Загрузка состояния из localStorage
   useEffect(() => {
@@ -53,10 +55,14 @@ function Article({ author, title, content: rawContent }) {
           </h3>
           <span className={styles.author}>{author || content.author}</span>
         </div>
-        <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
+        <div className={styles.headerRight}>
+          {control}
+          <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
+        </div>
       </button>
 
-      <ArticleReader body={content.body} />
+      {progressBar}
+      {bodyContent}
 
       {isExpanded && (
         <div className={styles.body}>
