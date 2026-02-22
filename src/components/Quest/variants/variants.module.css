@@ -11,7 +11,8 @@
   padding: 12px 16px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  background: var(--bg-primary);
+  background: var(--bg-input);
+  color: var(--text-primary);
   cursor: pointer;
   text-align: left;
   font-size: 14px;
@@ -29,6 +30,7 @@
 }
 
 .submitBtn {
+  width: 100%;
   padding: 10px 24px;
   background: #2196f3;
   color: #fff;
@@ -46,6 +48,11 @@
 .submitBtn:disabled {
   background: #bdbdbd;
   cursor: not-allowed;
+}
+
+:global(body.dark) .submitBtn:disabled {
+  background: #393939;
+  color: #777;
 }
 
 /* TrueFalse */
@@ -69,6 +76,8 @@
   border: 1px solid var(--border-color);
   border-radius: 4px;
   cursor: pointer;
+  background: var(--bg-input);
+  color: var(--text-primary);
   transition: all 0.15s, background-color 0.3s, border-color 0.3s;
 }
 
@@ -98,6 +107,8 @@
   border-radius: 4px;
   font-size: 14px;
   font-family: inherit;
+  background: var(--bg-input);
+  color: var(--text-primary);
   transition: border-color 0.15s, background-color 0.3s;
 }
 
@@ -295,7 +306,7 @@
 .codeWrapper {
   margin: 0;
   padding: 0;
-  background: var(--bg-secondary);
+  background: var(--bg-input);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -429,6 +440,8 @@
   font-size: 14px;
   line-height: 1.6;
   resize: vertical;
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
 .promptTextarea:focus {

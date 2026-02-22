@@ -59,11 +59,12 @@
 
 .question {
   flex: 1;
-  color: #333;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 [data-status="unanswered"] .question {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .points {
