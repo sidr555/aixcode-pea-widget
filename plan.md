@@ -1,145 +1,145 @@
-## 2026-02-23 Профили, сеансы, рекорды
+## 2026-02-23 Profiles, sessions, leaderboards
 
 ### 1. bonus.json + utils/bonus.js
-Конфиг четырёх бонусов и функции расчёта.
-- `calcDisciplineBonus` — жадный алгоритм по сериям дней
-- `calcAllStats` — mass, speed, progress, disciplineBonus из сеансов
-- Готово
+Bonus config and calculation functions.
+- `calcDisciplineBonus` — greedy algorithm over day streaks
+- `calcAllStats` — mass, speed, progress, disciplineBonus from sessions
+- Done
 
 ### 2. ProfileContext + ProfileSelector + CSS
-Контекст профилей в localStorage, оверлей выбора.
-- `ProfileProvider` — CRUD профилей, `addSession`, `updateProfileStats`
-- `ProfileSelector` — аккордеон со списком + форма создания
-- `Profile.module.css` — оверлей, аккордеон, форма, тёмная тема
-- Готово
+Profile context in localStorage, selection overlay.
+- `ProfileProvider` — CRUD profiles, `addSession`, `updateProfileStats`
+- `ProfileSelector` — accordion list + creation form
+- `Profile.module.css` — overlay, accordion, form, dark mode
+- Done
 
-### 3. App.jsx — шапка, бейджи, ProfileProvider
-- Заголовок "reati", 4 бейджа справа от имени
-- `<ProfileSelector>` показывается если профиль не выбран
-- Каждому `<Article>` передан `id={hash(title+author)}`
-- `App.css` — стили `.header-right`, `.badge`
-- Готово
+### 3. App.jsx — header, badges, ProfileProvider
+- Title "reati", 4 badges to the right of name
+- `<ProfileSelector>` shown when no profile selected
+- Each `<Article>` gets `id={hash(title+author)}`
+- `App.css` — `.header-right`, `.badge` styles
+- Done
 
 ### 4. ArticleReader — duration, onSessionComplete
-- Проп `duration` (сек, default 60) вместо хардкода `'60s'`
-- Прогрессбар: `time / duration` вместо `time / 60`
-- `onSessionComplete(wordCount)` вызывается при phase=done
-- Готово
+- `duration` prop (seconds, default 60) replaces hardcoded `'60s'`
+- Progress bar: `time / duration` instead of `time / 60`
+- `onSessionComplete(wordCount)` called at phase=done
+- Done
 
-### 5. Article — id, корона, лидерборд
-- Проп `id` (articleId), передаётся в reader и leaderboard
-- Кнопка-корона с числом сеансов, тогл текст/рекорды
-- `handleSessionComplete` → `addSession` → пересчёт метрик
-- Готово
+### 5. Article — id, crown, leaderboard
+- `id` prop (articleId), passed to reader and leaderboard
+- Crown button with session count, toggles text/leaderboard
+- `handleSessionComplete` → `addSession` → recalc stats
+- Done
 
 ### 6. ArticleLeaderboard
-- Таблица: #, дата, профиль, слов — сортировка по wordCount desc
-- Данные из `quest_sessions_*` всех профилей
-- Готово
+- Table: #, date, profile, words — sorted by wordCount desc
+- Data from `quest_sessions_*` across all profiles
+- Done
 
-### 7. ThemeSelector — профиль, шрифт
-- Ползунок размера шрифта 10–28
-- Ссылки «Сменить профиль» и «Удалить профиль»
-- Готово
+### 7. ThemeSelector — profile, font
+- Font size slider 10–28
+- "Change profile" and "Delete profile" links
+- Done
 
-### 8. ThemeContext — fontSize, синхронизация
-- `fontSize` state, CSS-переменная `--article-font-size`
+### 8. ThemeContext — fontSize, sync
+- `fontSize` state, CSS variable `--article-font-size`
 - `changeFontSize`, `syncFromProfile`
-- Готово
+- Done
 
 ### 9. useLocalStorage, main.jsx, index.jsx
-- `useProfileSessions` хук для сеансов профиля
-- `main.jsx` — обёртка `<ProfileProvider>`
-- `index.jsx` — экспорт ProfileProvider, useProfile, bonus-утилит
-- Готово
+- `useProfileSessions` hook for profile sessions
+- `main.jsx` — wrapped in `<ProfileProvider>`
+- `index.jsx` — exports ProfileProvider, useProfile, bonus utils
+- Done
 
-### Верификация
-- `npm run build` — без ошибок ✓
+### Verification
+- `npm run build` — no errors ✓
 
 ---
 
-## 2026-02-23 Шрифты, бейджи, кнопка
+## 2026-02-23 Fonts, badges, button
 
-### 1. Кнопка темы — имя профиля
-- Убран кружок `.colorPreview` когда есть профиль
-- Текст = имя профиля в `colors.primary`, fallback на название темы
-- Размер кнопки 15px (треть меньше 22px)
-- `Theme.module.css` — убран `.modeIcon`, `.selectorText` bold 600
-- Готово
+### 1. Theme button — profile name
+- Removed `.colorPreview` circle when profile exists
+- Text = profile name in `colors.primary`, fallback to theme name
+- Button size 15px (one third smaller than 22px)
+- `Theme.module.css` — removed `.modeIcon`, `.selectorText` bold 600
+- Done
 
-### 2. Ползунок шрифта — расширенное влияние
-- Убран `font-size: 16px` из `.app h3` (перекрывал CSS-модуль)
-- `.title` в Article.module.css → `calc(--article-font-size + 2px)`
+### 2. Font slider — extended scope
+- Removed `font-size: 16px` from `.app h3` (was overriding CSS module)
+- `.title` in Article.module.css → `calc(--article-font-size + 2px)`
 - `.leaderboard` → `var(--article-font-size)`
 - `.leaderboard th` → `calc(--article-font-size - 4px)`
 - Quest `.header` → `var(--article-font-size)`
 - Quest `.explanation` → `calc(--article-font-size - 2px)`
 - variants: `.option`, `.textInput`, `.textarea`, `.codeTextarea`, `.correctCode`, `.promptTextarea`, `.blockButton`, `.hint` → `calc(--article-font-size - 2px)`
 - `.trueFalse .option`, `.correctText` → `var(--article-font-size)`
-- Готово
+- Done
 
-### 3. Бейдж «Прочли»
-- `bonus.json`: `"mass"` label → `"Прочли"`, убран `color`
-- `calcAllStats`: `mass` = кол-во уникальных статей с `wordCount > 0`
-- `ProfileContext`: `uniqueArticles` берётся из `stats.mass`
-- `App.jsx`: бейдж mass `bg` = `colors.primary`
-- Готово
+### 3. "Read" badge
+- `bonus.json`: `"mass"` label → `"Read"`, removed `color`
+- `calcAllStats`: `mass` = unique articles with `wordCount > 0`
+- `ProfileContext`: `uniqueArticles` taken from `stats.mass`
+- `App.jsx`: mass badge `bg` = `colors.primary`
+- Done
 
-### Верификация
-- `npm run build` — без ошибок ✓
+### Verification
+- `npm run build` — no errors ✓
 
 ---
 
-## 2026-02-23 Кружок, лимит, шрифт пустого
+## 2026-02-23 Gold dot, limit, empty state font
 
-### 1. Золотой кружок вместо короны
+### 1. Gold dot instead of crown
 - `.crownIcon` → `.crownDot` (20×20px, border-radius 50%, bg #f5c518)
-- JSX: `<span className={styles.crownDot} />` вместо эмодзи
-- Готово
+- JSX: `<span className={styles.crownDot} />` instead of emoji
+- Done
 
-### 2. Лимит 10 строк в таблице рекордов
-- `rows.slice(0, 10).map(...)` в ArticleLeaderboard
-- Готово
+### 2. Leaderboard limited to 10 rows
+- `rows.slice(0, 10).map(...)` in ArticleLeaderboard
+- Done
 
-### 3. Шрифт пустого состояния
+### 3. Empty state font size
 - `.leaderboardEmpty` font-size → `var(--article-font-size, 16px)`
-- Готово
+- Done
 
-### Верификация
-- `npm run build` — без ошибок ✓
-
----
-
-## 2026-02-23 Бейджи, скрытие кружка
-
-### 1. Порядок бейджей в шапке
-- Массив badges: дисциплина и прогресс поменяны местами
-- Готово
-
-### 2. Скрытие кружка рекордов
-- Условие `articleId && sessionCount > 0` вместо `articleId`
-- Готово
-
-### Верификация
-- `npm run build` — без ошибок ✓
+### Verification
+- `npm run build` — no errors ✓
 
 ---
 
-## 2026-02-23 Выход, быстрая смена профиля
+## 2026-02-23 Badges, hide leaderboard dot
 
-### 1. Кнопка «Выйти» в ThemeSelector
-- Убраны ссылки «Сменить/Удалить профиль»
-- `.logoutBtn` — стиль как у «Читать» (6px 16px, 14px, font-weight 500)
-- Фон = цвет темы, белый текст
-- Готово
+### 1. Badge order in header
+- Badges array: swapped discipline and progress
+- Done
 
-### 2. Аккордеон профилей — быстрый вход
-- Клик по строке → `selectProfile(id)` напрямую
-- Кружок `.itemDot` (16px, цвет темы) справа в `.itemMeta`
-- Клик по кружку → `handleToggleExpand` (stopPropagation)
-- Панель содержит только кнопку «Удалить»
-- Убрана кнопка «Войти» и стиль `.enterBtn`
-- Готово
+### 2. Hide leaderboard dot
+- Condition `articleId && sessionCount > 0` instead of `articleId`
+- Done
 
-### Верификация
-- `npm run build` — без ошибок ✓
+### Verification
+- `npm run build` — no errors ✓
+
+---
+
+## 2026-02-23 Logout, quick profile switch
+
+### 1. "Logout" button in ThemeSelector
+- Removed "Change/Delete profile" links
+- `.logoutBtn` — styled like "Read" button (6px 16px, 14px, font-weight 500)
+- Background = theme color, white text
+- Done
+
+### 2. Accordion — quick profile entry
+- Row click → `selectProfile(id)` directly
+- `.itemDot` (16px, theme color) on the right in `.itemMeta`
+- Dot click → `handleToggleExpand` (stopPropagation)
+- Panel contains only "Delete" button
+- Removed "Enter" button and `.enterBtn` style
+- Done
+
+### Verification
+- `npm run build` — no errors ✓

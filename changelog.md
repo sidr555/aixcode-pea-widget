@@ -1,39 +1,39 @@
-## 2026-02-23 v0.1.4 — Выход, быстрая смена профиля
+## 2026-02-23 v0.1.4 — Logout, quick profile switch
 
-- Кнопка «Выйти» в меню темы вместо ссылок профиля
-- Клик по строке аккордеона — мгновенный вход в профиль
-- Кружок цвета темы справа — раскрывает панель удаления
-- Убрана кнопка «Войти» из аккордеона
+- "Logout" button in theme menu replaces profile links
+- Click accordion row for instant profile switch
+- Theme-colored dot on the right expands delete panel
+- Removed "Enter" button from accordion
 
-## 2026-02-23 v0.1.3 — Бейджи, скрытие кружка
+## 2026-02-23 v0.1.3 — Badges, hide leaderboard dot
 
-- Дисциплина и прогресс поменяны местами в шапке
-- Кружок рекордов скрыт при отсутствии сеансов
+- Swapped discipline and progress badge order in header
+- Leaderboard dot hidden when article has no sessions
 
-## 2026-02-23 v0.1.2 — Кружок, лимит, шрифт пустого
+## 2026-02-23 v0.1.2 — Gold dot, limit, empty state font
 
-- Золотой кружок вместо эмодзи-короны, 20px диаметр
-- Таблица рекордов ограничена 10 строками
-- «Ещё нет результатов» масштабируется ползунком шрифта
+- Gold dot replaces crown emoji, 20px diameter
+- Leaderboard table limited to 10 rows
+- "No results yet" scales with font size slider
 
-## 2026-02-23 v0.1.1 — Шрифты, бейджи, кнопка
+## 2026-02-23 v0.1.1 — Fonts, badges, button
 
-- Кнопка темы показывает имя профиля в цвете темы
-- Убран кружок перед именем на кнопке
-- Размер шрифта ползунком меняет заголовки статей, рекорды, квизы
-- Исправлен глобальный `.app h3` перекрывавший размер заголовков
-- Бейдж «Прочли» вместо «Масса», считает статьи с сеансами
-- Фон бейджа «Прочли» — цвет текущей темы
+- Theme button shows profile name in theme color
+- Removed color circle before name on button
+- Font size slider now affects article titles, leaderboards, quizzes
+- Fixed global `.app h3` overriding article title size
+- "Read" badge instead of "Mass", counts articles with sessions
+- "Read" badge background uses current theme color
 
-## 2026-02-23 v0.1.0 — Профили, сеансы, рекорды
+## 2026-02-23 v0.1.0 — Profiles, sessions, leaderboards
 
-- Система профилей с localStorage и аккордеон-селектором
-- Контекст профиля: создание, удаление, переключение
-- Сеансы чтения привязаны к профилю и статье
-- Четыре бейджа в шапке: масса, скорость, прогресс, дисциплина
-- Жадный алгоритм расчёта бонусов за серии дней
-- Таблица рекордов по статье через кнопку-корону
-- Параметр duration в ArticleReader вместо хардкода
-- Ползунок размера шрифта в настройках темы
-- Ссылки смены и удаления профиля в ThemeSelector
-- Заголовок приложения переименован в "reati"
+- Profile system with localStorage and accordion selector
+- Profile context: create, delete, switch
+- Reading sessions tied to profile and article
+- Four header badges: read, speed, progress, discipline
+- Greedy algorithm for discipline streak bonuses
+- Per-article leaderboard via crown button
+- Configurable duration prop in ArticleReader
+- Font size slider in theme settings
+- Profile change/delete links in ThemeSelector
+- App title renamed to "reati"
