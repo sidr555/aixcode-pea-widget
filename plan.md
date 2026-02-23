@@ -143,3 +143,23 @@ Profile context in localStorage, selection overlay.
 
 ### Verification
 - `npm run build` — no errors ✓
+
+---
+
+## 2026-02-23 Profile theme sync, leaderboard highlight
+
+### 1. Theme settings saved to profile
+- `ProfileContext` imports `useTheme` for `theme`, `mode`, `fontSize`, `syncFromProfile`
+- On profile switch: `syncFromProfile(profile)` loads saved settings
+- On theme/mode/fontSize change: `useEffect` writes back to active profile
+- `initialSyncDone` ref prevents saving during initial load
+- Done
+
+### 2. Leaderboard highlights current profile
+- Rows include `profileId` field
+- `isMine = r.profileId === activeProfileId`
+- `.leaderboardMine td` — `font-weight: 700`, `font-size: calc(--article-font-size * 1.2)`
+- Done
+
+### Verification
+- `npm run build` — no errors ✓

@@ -1,3 +1,9 @@
+## 2026-02-23 v0.1.5 — Profile theme sync, leaderboard highlight
+
+- Theme, mode, font size saved to profile on change
+- Settings restored when switching profiles
+- Current profile rows in leaderboard bold and 20% larger
+
 ## 2026-02-23 v0.1.4 — Logout, quick profile switch
 
 - "Logout" button in theme menu replaces profile links

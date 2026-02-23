@@ -3,7 +3,7 @@ import { useProfile } from '../Profile/ProfileContext';
 import styles from './Article.module.css';
 
 function ArticleLeaderboard({ articleId }) {
-  const { profiles } = useProfile();
+  const { profiles, activeProfileId } = useProfile();
 
   const rows = useMemo(() => {
     const result = [];
@@ -15,6 +15,7 @@ function ArticleLeaderboard({ articleId }) {
         for (const s of sessions) {
           if (s.articleId !== articleId) continue;
           result.push({
+            profileId: profile.id,
             name: profile.name + (profile.surname ? ` ${profile.surname}` : ''),
             wordCount: s.wordCount,
             date: s.date,
@@ -23,7 +24,6 @@ function ArticleLeaderboard({ articleId }) {
         }
       } catch {}
     }
-    // Sort by wordCount desc
     result.sort((a, b) => b.wordCount - a.wordCount);
     return result;
   }, [articleId, profiles]);
@@ -43,14 +43,17 @@ function ArticleLeaderboard({ articleId }) {
         </tr>
       </thead>
       <tbody>
-        {rows.slice(0, 10).map((r, i) => (
-          <tr key={`${r.timestamp}-${i}`}>
-            <td>{i + 1}</td>
-            <td>{new Date(r.timestamp).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
-            <td>{r.name}</td>
-            <td><strong>{r.wordCount}</strong></td>
-          </tr>
-        ))}
+        {rows.slice(0, 10).map((r, i) => {
+          const isMine = r.profileId === activeProfileId;
+          return (
+            <tr key={`${r.timestamp}-${i}`} className={isMine ? styles.leaderboardMine : undefined}>
+              <td>{i + 1}</td>
+              <td>{new Date(r.timestamp).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+              <td>{r.name}</td>
+              <td><strong>{r.wordCount}</strong></td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

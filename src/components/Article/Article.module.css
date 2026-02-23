@@ -318,6 +318,11 @@
   border-bottom: none;
 }
 
+.leaderboardMine td {
+  font-weight: 700;
+  font-size: calc(var(--article-font-size, 16px) * 1.2);
+}
+
 .leaderboardEmpty {
   padding: 24px;
   text-align: center;

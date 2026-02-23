@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { hash } from '../../utils/hash';
 import { calcAllStats } from '../../utils/bonus';
+import { useTheme } from '../Theme/ThemeContext';
 
 const ProfileContext = createContext(null);
 
@@ -31,9 +32,11 @@ function readSessions(pid) {
 }
 
 export function ProfileProvider({ children }) {
+  const { theme, mode, fontSize, syncFromProfile } = useTheme();
   const [profiles, setProfiles] = useState(() => readLS(PROFILES_KEY, []));
   const [activeProfileId, setActiveProfileId] = useState(() => readLS(ACTIVE_KEY, null));
   const [needsProfile, setNeedsProfile] = useState(false);
+  const initialSyncDone = useRef(false);
 
   // Persist profiles
   useEffect(() => { writeLS(PROFILES_KEY, profiles); }, [profiles]);
@@ -50,6 +53,26 @@ export function ProfileProvider({ children }) {
       setNeedsProfile(true);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load theme settings from profile on mount and on profile switch
+  useEffect(() => {
+    if (!activeProfileId) return;
+    const profile = profiles.find(p => p.id === activeProfileId);
+    if (profile) {
+      syncFromProfile(profile);
+      initialSyncDone.current = true;
+    }
+  }, [activeProfileId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Save theme/mode/fontSize to active profile when they change
+  useEffect(() => {
+    if (!activeProfileId || !initialSyncDone.current) return;
+    setProfiles(prev => prev.map(p => {
+      if (p.id !== activeProfileId) return p;
+      if (p.theme === theme && p.mode === mode && p.fontSize === fontSize) return p;
+      return { ...p, theme, mode, fontSize };
+    }));
+  }, [theme, mode, fontSize, activeProfileId]);
 
   const activeProfile = useMemo(
     () => profiles.find(p => p.id === activeProfileId) || null,
