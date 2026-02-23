@@ -96,7 +96,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
             </div>
             <div className={styles.headerRight}>
               {control}
-              {articleId && (
+              {articleId && sessionCount > 0 && (
                 <button
                   className={`${styles.crownBtn} ${showLeaderboard ? styles.crownBtnActive : ''}`}
                   onClick={toggleLeaderboard}
