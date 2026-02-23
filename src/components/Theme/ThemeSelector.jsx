@@ -1,9 +1,13 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { useTheme, THEMES } from './ThemeContext';
+import { useProfile } from '../Profile/ProfileContext';
 import styles from './Theme.module.css';
 
+const FONT_SIZES = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
+
 function ThemeSelector() {
-  const { theme, mode, colors, themes, changeTheme, changeMode } = useTheme();
+  const { theme, mode, fontSize, colors, themes, changeTheme, changeMode, changeFontSize } = useTheme();
+  const { activeProfile, openProfileSelector, deleteProfile } = useProfile();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -19,6 +23,19 @@ function ThemeSelector() {
 
   const currentThemeName = THEMES[theme]?.name || 'Апельсин';
 
+  const handleChangeProfile = () => {
+    setIsOpen(false);
+    openProfileSelector();
+  };
+
+  const handleDeleteProfile = () => {
+    if (!activeProfile) return;
+    if (confirm('Удалить профиль и все его данные?')) {
+      setIsOpen(false);
+      deleteProfile(activeProfile.id);
+    }
+  };
+
   return (
     <div className={styles.selector} ref={dropdownRef}>
       <button
@@ -27,8 +44,8 @@ function ThemeSelector() {
         type="button"
         style={{ borderColor: colors.primary }}
       >
-        <span 
-          className={styles.colorPreview} 
+        <span
+          className={styles.colorPreview}
           style={{ background: colors.primary }}
         />
         <span className={styles.selectorText}>{currentThemeName}</span>
@@ -68,7 +85,7 @@ function ThemeSelector() {
                   onClick={() => changeTheme(key)}
                   type="button"
                 >
-                  <span 
+                  <span
                     className={styles.themeColor}
                     style={{ background: THEMES[key][mode].primary }}
                   />
@@ -77,6 +94,34 @@ function ThemeSelector() {
               ))}
             </div>
           </div>
+
+          <div className={styles.section}>
+            <div className={styles.sectionLabel}>Размер шрифта</div>
+            <div className={styles.fontSizeRow}>
+              <input
+                type="range"
+                className={styles.fontSlider}
+                min={FONT_SIZES[0]}
+                max={FONT_SIZES[FONT_SIZES.length - 1]}
+                step={2}
+                value={fontSize}
+                onChange={e => changeFontSize(Number(e.target.value))}
+              />
+              <span className={styles.fontSizeValue}>{fontSize}</span>
+            </div>
+          </div>
+
+          {activeProfile && (
+            <div className={styles.section}>
+              <div className={styles.sectionLabel}>Профиль</div>
+              <button className={styles.linkBtn} onClick={handleChangeProfile} type="button">
+                Сменить профиль
+              </button>
+              <button className={`${styles.linkBtn} ${styles.linkBtnDanger}`} onClick={handleDeleteProfile} type="button">
+                Удалить профиль
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

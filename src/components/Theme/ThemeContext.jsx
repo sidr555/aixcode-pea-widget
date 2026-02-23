@@ -74,7 +74,7 @@ export const THEMES = {
   }
 };
 
-export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode = 'light' }) {
+export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode = 'light', defaultFontSize = 16 }) {
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined' || !window.localStorage) {
       return defaultTheme;
@@ -91,6 +91,14 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
     return saved || defaultMode;
   });
 
+  const [fontSize, setFontSize] = useState(() => {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return defaultFontSize;
+    }
+    const saved = localStorage.getItem('quest_font_size');
+    return saved ? Number(saved) : defaultFontSize;
+  });
+
   // Сохранение в localStorage и установка data-атрибутов
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -105,6 +113,12 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
     document.body.classList.toggle('dark', mode === 'dark');
     document.body.classList.toggle('light', mode === 'light');
   }, [mode]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.localStorage) localStorage.setItem('quest_font_size', String(fontSize));
+    document.documentElement.style.setProperty('--article-font-size', `${fontSize}px`);
+  }, [fontSize]);
 
 
   const changeTheme = useCallback((newTheme) => {
@@ -123,6 +137,19 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
     setMode(prev => prev === 'light' ? 'dark' : 'light');
   }, []);
 
+  const changeFontSize = useCallback((size) => {
+    const s = Number(size);
+    if (s >= 10 && s <= 28) setFontSize(s);
+  }, []);
+
+  // Sync from profile
+  const syncFromProfile = useCallback((profile) => {
+    if (!profile) return;
+    if (profile.theme && THEMES[profile.theme]) setTheme(profile.theme);
+    if (profile.mode === 'light' || profile.mode === 'dark') setMode(profile.mode);
+    if (profile.fontSize >= 10 && profile.fontSize <= 28) setFontSize(profile.fontSize);
+  }, []);
+
   const colors = useMemo(() => {
     return THEMES[theme]?.[mode] || THEMES.orange.light;
   }, [theme, mode]);
@@ -130,12 +157,15 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
   const value = useMemo(() => ({
     theme,
     mode,
+    fontSize,
     colors,
     themes: Object.keys(THEMES).map(key => ({ key, name: THEMES[key].name })),
     changeTheme,
     changeMode,
-    toggleMode
-  }), [theme, mode, colors, changeTheme, changeMode, toggleMode]);
+    toggleMode,
+    changeFontSize,
+    syncFromProfile
+  }), [theme, mode, fontSize, colors, changeTheme, changeMode, toggleMode, changeFontSize, syncFromProfile]);
 
   return (
     <ThemeContext.Provider value={value}>
@@ -150,11 +180,14 @@ export function useTheme() {
     return {
       theme: 'orange',
       mode: 'light',
+      fontSize: 16,
       colors: THEMES.orange.light,
       themes: Object.keys(THEMES).map(key => ({ key, name: THEMES[key].name })),
       changeTheme: () => {},
       changeMode: () => {},
-      toggleMode: () => {}
+      toggleMode: () => {},
+      changeFontSize: () => {},
+      syncFromProfile: () => {}
     };
   }
   return context;

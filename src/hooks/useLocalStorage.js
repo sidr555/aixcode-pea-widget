@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 const STORAGE_PREFIX = 'quest_';
 
@@ -147,4 +147,25 @@ export function useTestStorage(testId) {
     finish,
     reset
   };
+}
+
+/**
+ * Хук для чтения/записи сеансов профиля
+ * Формат: [{ articleId, wordCount, date (ISO), timestamp }]
+ */
+export function useProfileSessions(profileId) {
+  const key = profileId ? `sessions_${profileId}` : null;
+  const [sessions, setSessions, removeSessions] = useLocalStorage(key, []);
+
+  const addSession = useCallback((articleId, wordCount) => {
+    const now = new Date();
+    setSessions(prev => [...prev, {
+      articleId,
+      wordCount,
+      date: now.toISOString().slice(0, 10),
+      timestamp: now.getTime(),
+    }]);
+  }, [setSessions]);
+
+  return { sessions: key ? sessions : [], addSession, setSessions, removeSessions };
 }

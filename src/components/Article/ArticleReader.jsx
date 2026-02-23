@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, memo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
 import { useTimer, formatTime } from '../../hooks/useTimer';
 import { useTheme } from '../Theme/ThemeContext';
 import styles from './Article.module.css';
@@ -44,14 +44,18 @@ function tokenize(text) {
 /**
  * ArticleReader — таймер чтения с подсчётом слов.
  * Render-props компонент: children({ control, progressBar, bodyContent })
+ *
+ * @param {number} duration — время чтения в секундах (по умолчанию 60)
+ * @param {function} onSessionComplete — вызывается при phase=done с (wordCount)
  */
-function ArticleReader({ body, children }) {
+function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
   const { colors } = useTheme();
   const [phase, setPhase] = useState('idle'); // idle | reading | picking | done
   const [selectedSigIdx, setSelectedSigIdx] = useState(null);
   const [wordCount, setWordCount] = useState(null);
+  const calledRef = useRef(false);
 
-  const { time, start, stop, reset: resetTimer } = useTimer('60s', () => {
+  const { time, start, stop, reset: resetTimer } = useTimer(`${duration}s`, () => {
     setPhase('picking');
   });
 
@@ -64,6 +68,7 @@ function ArticleReader({ body, children }) {
 
   const handleStart = useCallback(() => {
     setPhase('reading');
+    calledRef.current = false;
     start();
   }, [start]);
 
@@ -79,10 +84,19 @@ function ArticleReader({ body, children }) {
     }
   }, [phase, selectedSigIdx]);
 
+  // Call onSessionComplete when phase becomes 'done'
+  useEffect(() => {
+    if (phase === 'done' && wordCount != null && !calledRef.current) {
+      calledRef.current = true;
+      onSessionComplete?.(wordCount);
+    }
+  }, [phase, wordCount, onSessionComplete]);
+
   const handleReset = useCallback(() => {
     setPhase('idle');
     setSelectedSigIdx(null);
     setWordCount(null);
+    calledRef.current = false;
     resetTimer();
   }, [resetTimer]);
 
@@ -142,7 +156,7 @@ function ArticleReader({ body, children }) {
         <div
           className={styles.readerTimerFill}
           style={{
-            width: `${(time / 60) * 100}%`,
+            width: `${(time / duration) * 100}%`,
             backgroundColor: colors.primary,
           }}
         />

@@ -1,4 +1,7 @@
 import { hash } from './utils/hash';
+import { useProfile } from './components/Profile/ProfileContext';
+import ProfileSelector from './components/Profile/ProfileSelector';
+import bonusConfig from './bonus.json';
 import {
   TrueFalse,
   MultipleChoice,
@@ -27,11 +30,35 @@ import ai2 from './art/ai-2.md?raw';
  * Демо-страница с примерами всех компонентов
  */
 function App() {
+  const { activeProfile, needsProfile } = useProfile();
+
+  const badges = activeProfile ? [
+    { key: 'mass', value: activeProfile.maxSpeed != null ? (activeProfile.maxSpeed + (activeProfile.uniqueArticles || 0) + (activeProfile.disciplineBonus || 0)) : 0, label: bonusConfig.mass.label, bg: bonusConfig.mass.color },
+    { key: 'speed', value: activeProfile.maxSpeed || 0, label: bonusConfig.speed.label, bg: bonusConfig.speed.color },
+    { key: 'progress', value: activeProfile.progress || 0, label: bonusConfig.progress.label, bg: (activeProfile.progress || 0) >= 0 ? bonusConfig.progress.colorPositive : bonusConfig.progress.colorNegative },
+    { key: 'discipline', value: activeProfile.disciplineBonus || 0, label: bonusConfig.discipline.label, bg: bonusConfig.discipline.color },
+  ] : [];
+
   return (
     <div className="app">
+      <ProfileSelector />
+
       <div className="app-header">
-        <h1>Quest Components Demo</h1>
-        <ThemeSelector />
+        <h1>reati</h1>
+        {activeProfile && (
+          <div className="header-right">
+            <span className="header-name">{activeProfile.name}</span>
+            <div className="header-badges">
+              {badges.map(b => (
+                <span key={b.key} className="badge" style={{ backgroundColor: b.bg }} title={b.label}>
+                  {b.value}
+                </span>
+              ))}
+            </div>
+            <ThemeSelector />
+          </div>
+        )}
+        {!activeProfile && <ThemeSelector />}
       </div>
 
       {/* ==================== СТАТЬИ ==================== */}
@@ -39,53 +66,59 @@ function App() {
         <h2>Статьи</h2>
 
         <Article
+          id={hash("Нейросеть научилась нагло врать!" + "Че Блок")}
           author="Че Блок"
           title="Нейросеть научилась нагло врать!"
           content={ai1}
         />
 
         <Article
+          id={hash("Твой робот делает фальшивые фото!" + "Фидель Ахматова")}
           author="Фидель Ахматова"
           title="Твой робот делает фальшивые фото!"
           content={ai2}
         />
 
       {/*  <Article
+          id={hash("Скажи мне, кто я есть!" + "Камило Есенин")}
           author="Камило Есенин"
           title="Скажи мне, кто я есть!"
           content={ai3}
         />
 
         <Article
+          id={hash("Строгий приказ для непослушной машины!" + "Рауль Пастернак")}
           author="Рауль Пастернак"
           title="Строгий приказ для непослушной машины!"
           content={ai4}
         />
 
         <Article
+          id={hash("У железного друга нет сердца!" + "Франк Волконский")}
           author="Франк Волконский"
           title="У железного друга нет сердца!"
           content={ai5}
         />
 
         <Article
+          id={hash("Твой друг-робот поможет учиться!" + "Убер Пестель")}
           author="Убер Пестель"
           title="Твой друг-робот поможет учиться!"
           content={ai6}
         />*/}
-      </section> 
+      </section>
 
       {/* ==================== INLINE РЕЖИМ ==================== */}
       <section className="section">
         <h2>Inline-режим (одиночные вопросы)</h2>
-        
+
         {/* TrueFalse */}
         <article className="article">
           <p>
-            React — это библиотека для создания пользовательских интерфейсов. 
+            React — это библиотека для создания пользовательских интерфейсов.
             Она была разработана компанией Facebook в 2013 году.
           </p>
-          
+
           <TrueFalse
             id="inline-tf-1"
             question="React был разработан компанией Google в 2015 году"
@@ -93,7 +126,7 @@ function App() {
             explanation="React был разработан Facebook (Meta) в 2013 году."
             points={5}
           />
-          
+
           <p>
             Продолжение статьи после вопроса...
           </p>
@@ -102,7 +135,7 @@ function App() {
         {/* MultipleChoice */}
         <article className="article">
           <p>Выберите правильный ответ на следующий вопрос:</p>
-          
+
           <MultipleChoice
             id="inline-mc-1"
             question="Какой хук используется для управления состоянием в React?"
@@ -136,7 +169,7 @@ function App() {
         {/* FillTheBlank */}
         <article className="article">
           <p>Заполните пропуск в предложении:</p>
-          
+
           <FillTheBlank
             id="inline-ftb-1"
             question="Хук useEffect выполняется после _____ компонента."
@@ -254,7 +287,7 @@ function App() {
       {/* ==================== ТЕСТ-РЕЖИМ ==================== */}
       <section className="section">
         <h2>Тест-режим</h2>
-        
+
         <Test id="test-react-basics" limit="5m" showCorrectAnswers={true}>
           <TrueFalse
             id="test-tf-1"
@@ -302,13 +335,13 @@ function App() {
       {/* ==================== СЧЁТЧИКИ ==================== */}
       <section className="section">
         <h2>Примеры счётчиков</h2>
-        
+
         <div className="counters-demo">
           <div className="counter-item">
             <h3>Счётчик для вопроса</h3>
             <Score type="question" targetId="inline-tf-1" />
           </div>
-          
+
           <div className="counter-item">
             <h3>Счётчик для теста</h3>
             <Score type="test" />

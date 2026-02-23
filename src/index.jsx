@@ -25,16 +25,21 @@ export { TestProvider, useTest, useTestQuestion } from './components/Test/TestCo
 export { default as Timer } from './components/Test/Timer';
 export { default as Score } from './components/Score/Score';
 
+// Профиль
+export { ProfileProvider, useProfile } from './components/Profile/ProfileContext';
+export { default as ProfileSelector } from './components/Profile/ProfileSelector';
+
 // Хуки
-export { useLocalStorage, useQuestStorage, useTestStorage } from './hooks/useLocalStorage';
+export { useLocalStorage, useQuestStorage, useTestStorage, useProfileSessions } from './hooks/useLocalStorage';
 export { useTimer, parseTimeLimit, formatTime } from './hooks/useTimer';
 
 // Утилиты
 export { hash, hashMultiple, parseHashString } from './utils/hash';
-export { 
-  normalizeAnswer, 
-  tokenizeAll, 
-  isSignificantToken, 
+export { calcDisciplineBonus, calcAllStats } from './utils/bonus';
+export {
+  normalizeAnswer,
+  tokenizeAll,
+  isSignificantToken,
   getSignificantIndices,
   sortIndices,
   compareIndices

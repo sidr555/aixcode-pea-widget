@@ -68,6 +68,7 @@
 .markdown {
   line-height: 1.7;
   color: var(--text-primary, #333);
+  font-size: var(--article-font-size, 16px);
 }
 
 .markdown p {
@@ -224,6 +225,7 @@
   border-top: 1px solid var(--border-color, #e0e0e0);
   line-height: 1.8;
   color: var(--text-primary, #333);
+  font-size: var(--article-font-size, 16px);
 }
 
 /* Слова */
@@ -244,4 +246,93 @@
   border-radius: 3px;
   padding: 1px 2px;
   margin: -1px -2px;
+}
+
+/* ===== Crown / Leaderboard toggle ===== */
+.crownBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+
+.crownBtn:hover {
+  background: var(--bg-hover, #f5f5f5);
+  border-color: var(--border-color, #e0e0e0);
+}
+
+.crownBtnActive {
+  background: #fff8e1;
+  border-color: #f5c518;
+}
+
+:global(body.dark) .crownBtnActive {
+  background: rgba(245, 197, 24, 0.15);
+  border-color: #f5c518;
+}
+
+.crownIcon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.crownCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c9a84c;
+}
+
+/* ===== Leaderboard ===== */
+.leaderboard {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.leaderboard th {
+  text-align: left;
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary, #666);
+  border-bottom: 2px solid var(--border-color, #e0e0e0);
+}
+
+.leaderboard td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  color: var(--text-primary, #333);
+}
+
+.leaderboard tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboardEmpty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-secondary, #666);
+  font-size: 14px;
+}
+
+:global(body.dark) .leaderboard th {
+  color: #999;
+  border-bottom-color: #444;
+}
+
+:global(body.dark) .leaderboard td {
+  color: #e0e0e0;
+  border-bottom-color: #444;
+}
+
+:global(body.dark) .crownBtn:hover {
+  background: #333;
 }
