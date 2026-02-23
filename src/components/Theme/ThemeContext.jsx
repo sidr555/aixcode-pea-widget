@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
+import './theme.css';
 
 const ThemeContext = createContext(null);
 
@@ -90,61 +91,20 @@ export function ThemeProvider({ children, defaultTheme = 'orange', defaultMode =
     return saved || defaultMode;
   });
 
+  // Сохранение в localStorage и установка data-атрибутов
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (typeof window !== "undefined" && window.localStorage) localStorage.setItem('quest_theme', theme);
+    if (window.localStorage) localStorage.setItem('quest_theme', theme);
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) localStorage.setItem('quest_mode', mode);
-    if (typeof document === 'undefined') return;
+    if (typeof window === 'undefined') return;
+    if (window.localStorage) localStorage.setItem('quest_mode', mode);
+    document.documentElement.dataset.mode = mode;
     document.body.classList.toggle('dark', mode === 'dark');
     document.body.classList.toggle('light', mode === 'light');
   }, [mode]);
-
-  // Установка CSS переменных для цветов темы
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    
-    const root = document.documentElement;
-    const c = THEMES[theme]?.[mode] || THEMES.orange.light;
-    root.style.setProperty('--primary-color', c.primary);
-    root.style.setProperty('--primary-light', c.primaryLight);
-    root.style.setProperty('--primary-dark', c.primaryDark);
-    root.style.setProperty('--accent-color', c.accent);
-    root.style.setProperty('--accent-light', c.accentLight);
-
-    // Цвета для light/dark режима
-    if (mode === 'light') {
-      root.style.setProperty('--bg-primary', '#fff');
-      root.style.setProperty('--bg-secondary', '#fafafa');
-      root.style.setProperty('--bg-input', '#fff');
-      root.style.setProperty('--bg-hover', '#f5f5f5');
-      root.style.setProperty('--bg-selected', '#fff3e0');
-      root.style.setProperty('--bg-success', '#e8f5e9');
-      root.style.setProperty('--bg-warning', '#fff3e0');
-      root.style.setProperty('--bg-word-selected', '#ffecb3');
-      root.style.setProperty('--bg-word-correct', '#c8e6c9');
-      root.style.setProperty('--bg-word-incorrect', '#ffcdd2');
-      root.style.setProperty('--text-primary', '#333');
-      root.style.setProperty('--text-secondary', '#666');
-      root.style.setProperty('--border-color', '#e0e0e0');
-    } else {
-      root.style.setProperty('--bg-primary', '#2a2a2a');
-      root.style.setProperty('--bg-secondary', '#333');
-      root.style.setProperty('--bg-input', '#404040');
-      root.style.setProperty('--bg-hover', '#3a3a3a');
-      root.style.setProperty('--bg-selected', 'rgba(255, 107, 53, 0.2)');
-      root.style.setProperty('--bg-success', 'rgba(76, 175, 80, 0.2)');
-      root.style.setProperty('--bg-warning', 'rgba(255, 152, 0, 0.2)');
-      root.style.setProperty('--bg-word-selected', 'rgba(255, 193, 179, 0.3)');
-      root.style.setProperty('--bg-word-correct', 'rgba(129, 199, 132, 0.3)');
-      root.style.setProperty('--bg-word-incorrect', 'rgba(229, 115, 115, 0.3)');
-      root.style.setProperty('--text-primary', '#e0e0e0');
-      root.style.setProperty('--text-secondary', '#999');
-      root.style.setProperty('--border-color', '#444');
-    }
-  }, [theme, mode]);
 
 
   const changeTheme = useCallback((newTheme) => {

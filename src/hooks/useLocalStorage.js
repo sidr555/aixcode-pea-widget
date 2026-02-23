@@ -26,13 +26,15 @@ export function useLocalStorage(key, initialValue) {
       if (typeof window === 'undefined' || !window.localStorage) {
         return;
       }
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(fullKey, JSON.stringify(valueToStore));
+      setStoredValue(prev => {
+        const valueToStore = value instanceof Function ? value(prev) : value;
+        window.localStorage.setItem(fullKey, JSON.stringify(valueToStore));
+        return valueToStore;
+      });
     } catch (error) {
       console.warn(`Error setting localStorage key "${fullKey}":`, error);
     }
-  }, [fullKey, storedValue]);
+  }, [fullKey]);
 
   const removeValue = useCallback(() => {
     try {

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, memo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '../Theme/ThemeContext';
 import { parseArticle } from '../../utils/parseArticle';
-import { useArticleReader } from './ArticleReader';
+import ArticleReader from './ArticleReader';
 import styles from './Article.module.css';
 
 function Article({ author, title, content: rawContent }) {
@@ -11,8 +11,6 @@ function Article({ author, title, content: rawContent }) {
 
   // Парсим содержимое при получении
   const content = rawContent ? parseArticle(rawContent) : null;
-
-  const { control, progressBar, bodyContent } = useArticleReader(content?.body || '');
 
   // Загрузка состояния из localStorage
   useEffect(() => {
@@ -42,38 +40,42 @@ function Article({ author, title, content: rawContent }) {
   }
 
   return (
-    <article className={styles.article}>
-      <button
-        className={styles.header}
-        onClick={toggleExpanded}
-        type="button"
-        style={{ borderColor: isExpanded ? colors.primary : 'transparent' }}
-      >
-        <div className={styles.headerContent}>
-          <h3 className={styles.title} style={{ color: colors.primary }}>
-            {title || content.title}
-          </h3>
-          <span className={styles.author}>{author || content.author}</span>
-        </div>
-        <div className={styles.headerRight}>
-          {control}
-          <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
-        </div>
-      </button>
+    <ArticleReader body={content.body || ''}>
+      {({ control, progressBar, bodyContent }) => (
+        <article className={styles.article}>
+          <button
+            className={styles.header}
+            onClick={toggleExpanded}
+            type="button"
+            style={{ borderColor: isExpanded ? colors.primary : 'transparent' }}
+          >
+            <div className={styles.headerContent}>
+              <h3 className={styles.title} style={{ color: colors.primary }}>
+                {title || content.title}
+              </h3>
+              <span className={styles.author}>{author || content.author}</span>
+            </div>
+            <div className={styles.headerRight}>
+              {control}
+              <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
+            </div>
+          </button>
 
-      {progressBar}
-      {bodyContent}
+          {progressBar}
+          {bodyContent}
 
-      {isExpanded && (
-        <div className={styles.body}>
-          <div className={styles.markdown}>
-            <ReactMarkdown>
-              {content.body}
-            </ReactMarkdown>
-          </div>
-        </div>
+          {isExpanded && (
+            <div className={styles.body}>
+              <div className={styles.markdown}>
+                <ReactMarkdown>
+                  {content.body}
+                </ReactMarkdown>
+              </div>
+            </div>
+          )}
+        </article>
       )}
-    </article>
+    </ArticleReader>
   );
 }
 

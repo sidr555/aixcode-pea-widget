@@ -42,9 +42,10 @@ function tokenize(text) {
 }
 
 /**
- * ArticleReader — таймер чтения с подсчётом слов
+ * ArticleReader — таймер чтения с подсчётом слов.
+ * Render-props компонент: children({ control, progressBar, bodyContent })
  */
-function ArticleReader({ body }) {
+function ArticleReader({ body, children }) {
   const { colors } = useTheme();
   const [phase, setPhase] = useState('idle'); // idle | reading | picking | done
   const [selectedSigIdx, setSelectedSigIdx] = useState(null);
@@ -174,16 +175,7 @@ function ArticleReader({ body }) {
     </div>
   ) : null;
 
-  return { control, progressBar, bodyContent };
+  return children({ control, progressBar, bodyContent });
 }
 
-function ArticleReaderWrapper({ body }) {
-  return null; // не используется напрямую
-}
-
-// Экспортируем хук-подобную функцию
-export function useArticleReader(body) {
-  return ArticleReader({ body });
-}
-
-export default memo(ArticleReaderWrapper);
+export default memo(ArticleReader);

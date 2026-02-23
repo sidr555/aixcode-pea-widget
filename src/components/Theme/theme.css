@@ -1,0 +1,96 @@
+/* === Orange === */
+[data-theme="orange"][data-mode="light"] {
+  --primary-color: #ff6b35;
+  --primary-light: #ff8c5a;
+  --primary-dark: #e55a2b;
+  --accent-color: #ff9f1c;
+  --accent-light: #ffb347;
+}
+[data-theme="orange"][data-mode="dark"] {
+  --primary-color: #ff7b45;
+  --primary-light: #ff9c6a;
+  --primary-dark: #e56a35;
+  --accent-color: #ffaf3c;
+  --accent-light: #ffc367;
+}
+
+/* === Lime === */
+[data-theme="lime"][data-mode="light"] {
+  --primary-color: #4caf50;
+  --primary-light: #66bb6a;
+  --primary-dark: #388e3c;
+  --accent-color: #8bc34a;
+  --accent-light: #9ccc65;
+}
+[data-theme="lime"][data-mode="dark"] {
+  --primary-color: #5cbf60;
+  --primary-light: #76cf7a;
+  --primary-dark: #4cae50;
+  --accent-color: #9cd35a;
+  --accent-light: #acd670;
+}
+
+/* === Melon === */
+[data-theme="melon"][data-mode="light"] {
+  --primary-color: #ff6b9d;
+  --primary-light: #ff8cb5;
+  --primary-dark: #e55a87;
+  --accent-color: #ffb3c6;
+  --accent-light: #ffc6d4;
+}
+[data-theme="melon"][data-mode="dark"] {
+  --primary-color: #ff7bad;
+  --primary-light: #ff9cc5;
+  --primary-dark: #e56a97;
+  --accent-color: #ffc3d6;
+  --accent-light: #ffd6e4;
+}
+
+/* === Ice === */
+[data-theme="ice"][data-mode="light"] {
+  --primary-color: #00bcd4;
+  --primary-light: #26c6da;
+  --primary-dark: #00acc1;
+  --accent-color: #4dd0e1;
+  --accent-light: #80deea;
+}
+[data-theme="ice"][data-mode="dark"] {
+  --primary-color: #10ccdc;
+  --primary-light: #36dcea;
+  --primary-dark: #00bcd1;
+  --accent-color: #5de0f1;
+  --accent-light: #80e6f2;
+}
+
+/* === Mode colors === */
+[data-mode="light"] {
+  --bg-primary: #fff;
+  --bg-secondary: #fafafa;
+  --bg-input: #fff;
+  --bg-hover: #f5f5f5;
+  --bg-selected: #fff3e0;
+  --bg-success: #e8f5e9;
+  --bg-warning: #fff3e0;
+  --bg-word-selected: #ffecb3;
+  --bg-word-correct: #c8e6c9;
+  --bg-word-incorrect: #ffcdd2;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --border-color: #e0e0e0;
+}
+
+[data-mode="dark"] {
+  --bg-primary: #2a2a2a;
+  --bg-secondary: #333;
+  --bg-input: #404040;
+  --bg-hover: #3a3a3a;
+  --bg-selected: rgba(255, 107, 53, 0.2);
+  --bg-success: rgba(76, 175, 80, 0.2);
+  --bg-warning: rgba(255, 152, 0, 0.2);
+  --bg-word-selected: rgba(255, 193, 179, 0.3);
+  --bg-word-correct: rgba(129, 199, 132, 0.3);
+  --bg-word-incorrect: rgba(229, 115, 115, 0.3);
+  --text-primary: #e0e0e0;
+  --text-secondary: #999;
+  --border-color: #444;
+}

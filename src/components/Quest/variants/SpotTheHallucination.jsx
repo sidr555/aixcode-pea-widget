@@ -54,6 +54,8 @@ function SpotTheHallucination({
   }, [correctAnswer]);
 
   const [selectedIndices, setSelectedIndices] = useState([]);
+  const selectedSet = useMemo(() => new Set(selectedIndices), [selectedIndices]);
+  const correctSet = useMemo(() => new Set(correctIndices), [correctIndices]);
   const [showResult, setShowResult] = useState(false);
 
   const resetState = useCallback(() => {
@@ -78,11 +80,15 @@ function SpotTheHallucination({
   }, [id]);
 
   const handleToggle = useCallback((index) => {
-    setSelectedIndices(prev => 
-      prev.includes(index)
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+    setSelectedIndices(prev => {
+      const set = new Set(prev);
+      if (set.has(index)) {
+        set.delete(index);
+      } else {
+        set.add(index);
+      }
+      return [...set];
+    });
   }, []);
 
   const checkAnswer = useCallback((answer) => {
@@ -112,7 +118,7 @@ function SpotTheHallucination({
             <WordToken
               key={token.index}
               token={token}
-              isSelected={selectedIndices.includes(token.index)}
+              isSelected={selectedSet.has(token.index)}
               onToggle={handleToggle}
               showCorrect={false}
               isCorrect={false}
@@ -133,7 +139,7 @@ function SpotTheHallucination({
         </button>
       </div>
     );
-  }, [tokens, selectedIndices, handleToggle]);
+  }, [tokens, selectedIndices, selectedSet, handleToggle]);
 
   const renderCorrectAnswer = useCallback(() => {
     return (
@@ -144,22 +150,22 @@ function SpotTheHallucination({
             <WordToken
               key={token.index}
               token={token}
-              isSelected={selectedIndices.includes(token.index)}
+              isSelected={selectedSet.has(token.index)}
               onToggle={() => {}}
               showCorrect={true}
-              isCorrect={correctIndices.includes(token.index)}
+              isCorrect={correctSet.has(token.index)}
             />
           ))}
         </div>
         <div className={styles.legend}>
           <span className={styles.correctLegend}>Зелёным</span> — слова-галлюцинации
-          {selectedIndices.some(i => !correctIndices.includes(i)) && (
+          {selectedIndices.some(i => !correctSet.has(i)) && (
             <>, <span className={styles.incorrectLegend}>красным</span> — ошибочно отмеченные</>
           )}
         </div>
       </div>
     );
-  }, [tokens, selectedIndices, correctIndices]);
+  }, [tokens, selectedIndices, selectedSet, correctSet]);
 
   return (
     <Quest
