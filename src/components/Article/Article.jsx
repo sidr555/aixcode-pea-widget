@@ -103,7 +103,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
                   type="button"
                   title="Таблица рекордов"
                 >
-                  <span className={styles.crownIcon}>👑</span>
+                  <span className={styles.crownDot} />
                   {sessionCount > 0 && <span className={styles.crownCount}>{sessionCount}</span>}
                 </button>
               )}

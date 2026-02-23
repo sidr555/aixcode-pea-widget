@@ -253,12 +253,11 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 4px;
   background: none;
   border: 1px solid transparent;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
   transition: all 0.15s;
 }
 
@@ -277,9 +276,12 @@
   border-color: #f5c518;
 }
 
-.crownIcon {
-  font-size: 16px;
-  line-height: 1;
+.crownDot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f5c518;
+  flex-shrink: 0;
 }
 
 .crownCount {
@@ -320,7 +322,7 @@
   padding: 24px;
   text-align: center;
   color: var(--text-secondary, #666);
-  font-size: 14px;
+  font-size: var(--article-font-size, 16px);
 }
 
 :global(body.dark) .leaderboard th {

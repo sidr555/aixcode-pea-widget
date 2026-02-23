@@ -43,7 +43,7 @@ function ArticleLeaderboard({ articleId }) {
         </tr>
       </thead>
       <tbody>
-        {rows.map((r, i) => (
+        {rows.slice(0, 10).map((r, i) => (
           <tr key={`${r.timestamp}-${i}`}>
             <td>{i + 1}</td>
             <td>{new Date(r.timestamp).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>

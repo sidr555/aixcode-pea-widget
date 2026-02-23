@@ -87,3 +87,23 @@
 
 ### Верификация
 - `npm run build` — без ошибок ✓
+
+---
+
+## 2026-02-23 Кружок, лимит, шрифт пустого
+
+### 1. Золотой кружок вместо короны
+- `.crownIcon` → `.crownDot` (20×20px, border-radius 50%, bg #f5c518)
+- JSX: `<span className={styles.crownDot} />` вместо эмодзи
+- Готово
+
+### 2. Лимит 10 строк в таблице рекордов
+- `rows.slice(0, 10).map(...)` в ArticleLeaderboard
+- Готово
+
+### 3. Шрифт пустого состояния
+- `.leaderboardEmpty` font-size → `var(--article-font-size, 16px)`
+- Готово
+
+### Верификация
+- `npm run build` — без ошибок ✓
