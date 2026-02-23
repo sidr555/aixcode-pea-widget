@@ -1,5 +1,5 @@
 {
-  "mass": { "label": "Масса", "color": "#f5c518" },
+  "mass": { "label": "Прочли" },
   "speed": { "label": "Скорость", "color": "#c9a84c" },
   "progress": { "label": "Прогресс", "colorPositive": "#4caf50", "colorNegative": "#e53935" },
   "discipline": {

@@ -35,7 +35,7 @@
 
 .title {
   margin: 0 0 4px 0;
-  font-size: 18px;
+  font-size: calc(var(--article-font-size, 16px) + 2px);
   font-weight: 600;
   color: var(--primary-color, #ff6b35);
 }
@@ -292,14 +292,14 @@
 .leaderboard {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: var(--article-font-size, 16px);
 }
 
 .leaderboard th {
   text-align: left;
   padding: 8px 12px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: calc(var(--article-font-size, 16px) - 4px);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-secondary, #666);

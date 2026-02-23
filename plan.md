@@ -55,3 +55,35 @@
 
 ### Верификация
 - `npm run build` — без ошибок ✓
+
+---
+
+## 2026-02-23 Шрифты, бейджи, кнопка
+
+### 1. Кнопка темы — имя профиля
+- Убран кружок `.colorPreview` когда есть профиль
+- Текст = имя профиля в `colors.primary`, fallback на название темы
+- Размер кнопки 15px (треть меньше 22px)
+- `Theme.module.css` — убран `.modeIcon`, `.selectorText` bold 600
+- Готово
+
+### 2. Ползунок шрифта — расширенное влияние
+- Убран `font-size: 16px` из `.app h3` (перекрывал CSS-модуль)
+- `.title` в Article.module.css → `calc(--article-font-size + 2px)`
+- `.leaderboard` → `var(--article-font-size)`
+- `.leaderboard th` → `calc(--article-font-size - 4px)`
+- Quest `.header` → `var(--article-font-size)`
+- Quest `.explanation` → `calc(--article-font-size - 2px)`
+- variants: `.option`, `.textInput`, `.textarea`, `.codeTextarea`, `.correctCode`, `.promptTextarea`, `.blockButton`, `.hint` → `calc(--article-font-size - 2px)`
+- `.trueFalse .option`, `.correctText` → `var(--article-font-size)`
+- Готово
+
+### 3. Бейдж «Прочли»
+- `bonus.json`: `"mass"` label → `"Прочли"`, убран `color`
+- `calcAllStats`: `mass` = кол-во уникальных статей с `wordCount > 0`
+- `ProfileContext`: `uniqueArticles` берётся из `stats.mass`
+- `App.jsx`: бейдж mass `bg` = `colors.primary`
+- Готово
+
+### Верификация
+- `npm run build` — без ошибок ✓

@@ -62,8 +62,11 @@ export function calcAllStats(sessions) {
     return { mass: 0, speed: 0, progress: 0, disciplineBonus: 0 };
   }
 
-  // mass = общее кол-во слов
-  const mass = sessions.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+  // mass = кол-во уникальных статей с ненулевыми результатами
+  const articlesWithResults = new Set(
+    sessions.filter(s => s.wordCount > 0).map(s => s.articleId)
+  );
+  const mass = articlesWithResults.size;
 
   // speed = максимум слов за сеанс
   const speed = Math.max(...sessions.map(s => s.wordCount || 0));

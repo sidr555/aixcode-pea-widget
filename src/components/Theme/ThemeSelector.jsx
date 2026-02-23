@@ -44,12 +44,15 @@ function ThemeSelector() {
         type="button"
         style={{ borderColor: colors.primary }}
       >
-        <span
-          className={styles.colorPreview}
-          style={{ background: colors.primary }}
-        />
-        <span className={styles.selectorText}>{currentThemeName}</span>
-        <span className={styles.modeIcon}>{mode === 'dark' ? '🌙' : '☀️'}</span>
+        {!activeProfile && (
+          <span
+            className={styles.colorPreview}
+            style={{ background: colors.primary }}
+          />
+        )}
+        <span className={styles.selectorText} style={activeProfile ? { color: colors.primary } : undefined}>
+          {activeProfile ? activeProfile.name : currentThemeName}
+        </span>
         <span className={styles.arrow}>{isOpen ? '▲' : '▼'}</span>
       </button>
 

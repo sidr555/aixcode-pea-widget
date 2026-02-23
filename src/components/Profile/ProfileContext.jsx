@@ -100,7 +100,7 @@ export function ProfileProvider({ children }) {
       return {
         ...p,
         maxSpeed: stats.speed,
-        uniqueArticles: stats.progress,
+        uniqueArticles: stats.mass,
         progress: stats.progress,
         disciplineBonus: stats.disciplineBonus,
         lastSessionTime: sessions.length > 0 ? sessions[sessions.length - 1].timestamp : p.lastSessionTime,

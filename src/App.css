@@ -30,12 +30,6 @@
   gap: 12px;
 }
 
-.header-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-primary, #333);
-}
-
 .header-badges {
   display: flex;
   gap: 6px;
@@ -61,7 +55,6 @@
 }
 
 .app h3 {
-  font-size: 16px;
   margin: 16px 0 8px;
   color: var(--text-secondary);
 }

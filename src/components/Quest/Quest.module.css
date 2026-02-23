@@ -23,7 +23,7 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  font-size: 16px;
+  font-size: var(--article-font-size, 16px);
   gap: 12px;
 }
 
@@ -97,7 +97,7 @@
   background: var(--bg-warning);
   border-radius: 4px;
   color: #e65100;
-  font-size: 14px;
+  font-size: calc(var(--article-font-size, 16px) - 2px);
   line-height: 1.5;
 }
 

@@ -17,6 +17,7 @@ import {
   Article
 } from './index.jsx';
 import ThemeSelector from './components/Theme/ThemeSelector';
+import { useTheme } from './components/Theme/ThemeContext';
 import './App.css';
 import ai1 from './art/ai-1.md?raw';
 import ai2 from './art/ai-2.md?raw';
@@ -31,9 +32,10 @@ import ai2 from './art/ai-2.md?raw';
  */
 function App() {
   const { activeProfile, needsProfile } = useProfile();
+  const { colors } = useTheme();
 
   const badges = activeProfile ? [
-    { key: 'mass', value: activeProfile.maxSpeed != null ? (activeProfile.maxSpeed + (activeProfile.uniqueArticles || 0) + (activeProfile.disciplineBonus || 0)) : 0, label: bonusConfig.mass.label, bg: bonusConfig.mass.color },
+    { key: 'mass', value: activeProfile.uniqueArticles || 0, label: bonusConfig.mass.label, bg: colors.primary },
     { key: 'speed', value: activeProfile.maxSpeed || 0, label: bonusConfig.speed.label, bg: bonusConfig.speed.color },
     { key: 'progress', value: activeProfile.progress || 0, label: bonusConfig.progress.label, bg: (activeProfile.progress || 0) >= 0 ? bonusConfig.progress.colorPositive : bonusConfig.progress.colorNegative },
     { key: 'discipline', value: activeProfile.disciplineBonus || 0, label: bonusConfig.discipline.label, bg: bonusConfig.discipline.color },
@@ -47,7 +49,6 @@ function App() {
         <h1>reati</h1>
         {activeProfile && (
           <div className="header-right">
-            <span className="header-name">{activeProfile.name}</span>
             <div className="header-badges">
               {badges.map(b => (
                 <span key={b.key} className="badge" style={{ backgroundColor: b.bg }} title={b.label}>
