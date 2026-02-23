@@ -18,7 +18,12 @@ function ProfileSelector() {
 
   if (!needsProfile) return null;
 
-  const handleToggle = (id) => {
+  const handleSelect = (id) => {
+    selectProfile(id);
+  };
+
+  const handleToggleExpand = (id, e) => {
+    e.stopPropagation();
     setExpandedId(prev => prev === id ? null : id);
     setShowForm(false);
   };
@@ -42,10 +47,6 @@ function ProfileSelector() {
     setShowForm(false);
   };
 
-  const handleSelect = (id) => {
-    selectProfile(id);
-  };
-
   const handleDelete = (id, e) => {
     e.stopPropagation();
     if (confirm('Удалить профиль и все его данные?')) {
@@ -55,8 +56,7 @@ function ProfileSelector() {
   };
 
   const totalScore = (p) => {
-    const s = (p.maxSpeed || 0) + (p.uniqueArticles || 0) + (p.disciplineBonus || 0);
-    return s;
+    return (p.maxSpeed || 0) + (p.uniqueArticles || 0) + (p.disciplineBonus || 0);
   };
 
   return (
@@ -69,25 +69,22 @@ function ProfileSelector() {
             <div key={p.id} className={styles.item}>
               <button
                 className={`${styles.itemHeader} ${expandedId === p.id ? styles.itemHeaderActive : ''}`}
-                onClick={() => handleToggle(p.id)}
+                onClick={() => handleSelect(p.id)}
                 type="button"
               >
                 <span className={styles.itemName}>{p.name}{p.surname ? ` ${p.surname}` : ''}</span>
                 <span className={styles.itemMeta}>
                   {calcAge(p.birthDate) !== null && <span>{calcAge(p.birthDate)} лет</span>}
                   <span className={styles.itemScore}>{totalScore(p)}</span>
+                  <span
+                    className={styles.itemDot}
+                    style={{ backgroundColor: colors.primary }}
+                    onClick={(e) => handleToggleExpand(p.id, e)}
+                  />
                 </span>
               </button>
               {expandedId === p.id && (
                 <div className={styles.itemBody}>
-                  <button
-                    className={styles.enterBtn}
-                    onClick={() => handleSelect(p.id)}
-                    type="button"
-                    style={{ backgroundColor: colors.primary }}
-                  >
-                    Войти
-                  </button>
                   <button
                     className={styles.deleteBtn}
                     onClick={(e) => handleDelete(p.id, e)}

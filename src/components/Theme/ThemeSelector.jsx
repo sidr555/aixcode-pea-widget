@@ -7,7 +7,7 @@ const FONT_SIZES = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
 
 function ThemeSelector() {
   const { theme, mode, fontSize, colors, themes, changeTheme, changeMode, changeFontSize } = useTheme();
-  const { activeProfile, openProfileSelector, deleteProfile } = useProfile();
+  const { activeProfile, openProfileSelector } = useProfile();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -23,17 +23,9 @@ function ThemeSelector() {
 
   const currentThemeName = THEMES[theme]?.name || 'Апельсин';
 
-  const handleChangeProfile = () => {
+  const handleLogout = () => {
     setIsOpen(false);
     openProfileSelector();
-  };
-
-  const handleDeleteProfile = () => {
-    if (!activeProfile) return;
-    if (confirm('Удалить профиль и все его данные?')) {
-      setIsOpen(false);
-      deleteProfile(activeProfile.id);
-    }
   };
 
   return (
@@ -116,12 +108,13 @@ function ThemeSelector() {
 
           {activeProfile && (
             <div className={styles.section}>
-              <div className={styles.sectionLabel}>Профиль</div>
-              <button className={styles.linkBtn} onClick={handleChangeProfile} type="button">
-                Сменить профиль
-              </button>
-              <button className={`${styles.linkBtn} ${styles.linkBtnDanger}`} onClick={handleDeleteProfile} type="button">
-                Удалить профиль
+              <button
+                className={styles.logoutBtn}
+                onClick={handleLogout}
+                type="button"
+                style={{ backgroundColor: colors.primary }}
+              >
+                Выйти
               </button>
             </div>
           )}

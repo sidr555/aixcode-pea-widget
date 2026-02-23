@@ -82,26 +82,23 @@
   color: var(--text-primary, #333);
 }
 
-.itemBody {
-  display: flex;
-  gap: 8px;
-  padding: 8px 16px 12px;
-}
-
-.enterBtn {
-  flex: 1;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
+.itemDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
   cursor: pointer;
   transition: opacity 0.15s;
 }
 
-.enterBtn:hover {
-  opacity: 0.85;
+.itemDot:hover {
+  opacity: 0.7;
+}
+
+.itemBody {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px 12px;
 }
 
 .deleteBtn {
