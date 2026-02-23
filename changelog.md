@@ -1,3 +1,9 @@
+## 2026-02-23 v0.1.6 — Persistent timer bar
+
+- Progress bar stays visible after reading session ends
+- Prevents layout shift when transitioning to word-picking phase
+- Click-to-stop only active during reading phase
+
 ## 2026-02-23 v0.1.5 — Profile theme sync, leaderboard highlight
 
 - Theme, mode, font size saved to profile on change

@@ -149,9 +149,15 @@ function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
     return null;
   })();
 
-  // Прогрессбар (отдельно, ниже заголовка)
-  const progressBar = phase === 'reading' ? (
-    <div className={styles.readerTimer} onClick={handleStopEarly} title="Нажмите, чтобы завершить чтение">
+  // Прогрессбар (отдельно, ниже заголовка) — остаётся видимым после окончания таймера
+  const isReading = phase === 'reading';
+  const progressBar = phase !== 'idle' ? (
+    <div
+      className={styles.readerTimer}
+      onClick={isReading ? handleStopEarly : undefined}
+      title={isReading ? 'Нажмите, чтобы завершить чтение' : undefined}
+      style={isReading ? undefined : { cursor: 'default' }}
+    >
       <div className={styles.readerTimerBar}>
         <div
           className={styles.readerTimerFill}

@@ -163,3 +163,17 @@ Profile context in localStorage, selection overlay.
 
 ### Verification
 - `npm run build` — no errors ✓
+
+---
+
+## 2026-02-23 Persistent timer bar
+
+### 1. ArticleReader — keep progress bar visible
+- Changed `phase === 'reading'` to `phase !== 'idle'` for progressBar rendering
+- Bar stays visible during picking and done phases
+- Click-to-stop handler only active during reading phase
+- Cursor set to default when not reading
+- Done
+
+### Verification
+- `npm run build` — no errors ✓
