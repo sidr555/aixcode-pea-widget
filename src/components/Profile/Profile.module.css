@@ -244,3 +244,15 @@
 :global(body.dark) .deleteBtn {
   border-color: #444;
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .panel {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .itemHeader {
+    padding: 10px 12px;
+  }
+}

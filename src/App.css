@@ -98,3 +98,45 @@
   font-size: 14px;
   color: var(--text-secondary);
 }
+
+/* Mobile: fluid layout */
+@media (max-width: 600px) {
+  .app {
+    padding: 8px;
+  }
+
+  .app-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    gap: 8px;
+  }
+
+  .app-header h1 {
+    font-size: 22px;
+  }
+
+  .app h2 {
+    font-size: 18px;
+    margin: 16px 0 8px;
+  }
+
+  .section {
+    margin: 12px 0;
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  .article {
+    margin: 12px 0;
+    padding: 8px;
+  }
+
+  .counters-demo {
+    gap: 8px;
+  }
+
+  .counter-item {
+    min-width: 140px;
+    padding: 8px;
+  }
+}

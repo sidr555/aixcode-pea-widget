@@ -1,7 +1,6 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import Quest from '../Quest';
 import { hash, parseHashString } from '../../../utils/hash';
-import { normalizeAnswer } from '../../../utils/normalize';
 import styles from './variants.module.css';
 
 /**
@@ -47,8 +46,8 @@ function MultipleChoice({
   const renderAnswer = useCallback(({ onSubmit }) => {
     const handleSubmit = () => {
       const answerHash = multiple
-        ? selected.map(s => hash(normalizeAnswer(s))).join('|')
-        : hash(normalizeAnswer(selected[0] || ''));
+        ? selected.map(s => hash(s)).join('|')
+        : hash(selected[0] || '');
       onSubmit(answerHash);
     };
 
@@ -79,30 +78,26 @@ function MultipleChoice({
     );
   }, [id, items, multiple, selected, handleToggle]);
 
-  const renderCorrectAnswer = useCallback(() => {
+  const fullExplanation = useMemo(() => {
     const correctHashes = parseHashString(correctAnswer);
-    const correctItems = items.filter(item => 
-      correctHashes.includes(hash(normalizeAnswer(item)))
+    const correctItems = items.filter(item =>
+      correctHashes.includes(hash(item))
     );
-    return (
-      <ul className={styles.correctList}>
-        {correctItems.map((item, idx) => (
-          <li key={idx}>{item}</li>
-        ))}
-      </ul>
-    );
-  }, [correctAnswer, items]);
+    const label = correctItems.join(', ');
+    return label
+      ? (explanation ? `${explanation}\n${label}` : label)
+      : explanation;
+  }, [correctAnswer, items, explanation]);
 
   return (
     <Quest
       id={id}
       question={question}
       correctAnswer={correctAnswer}
-      explanation={explanation}
+      explanation={fullExplanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

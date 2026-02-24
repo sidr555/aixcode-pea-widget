@@ -17,7 +17,6 @@ function Quest({
   alwaysShowExplanation = false,
   children,
   renderAnswer,        // Функция рендеринга вариантов ответа
-  renderCorrectAnswer, // Функция рендеринга правильного ответа
   checkAnswer,         // Функция проверки ответа
   onStatusChange,      // Callback при изменении статуса (из теста)
   onReset              // Callback для сброса внутреннего состояния варианта
@@ -74,8 +73,6 @@ function Quest({
     onStatusChange?.('unanswered', 0);
   }, [reset, onReset, onStatusChange]);
 
-  const showExplanation = alwaysShowExplanation || state.status === 'incorrect';
-
   return (
     <QuestProvider 
       id={id} 
@@ -106,18 +103,12 @@ function Quest({
           </div>
         )}
 
-        {/* Показ правильного ответа для неверных или при showAnswers */}
-        {(state.status === 'incorrect' || (showAnswers && state.status !== 'unanswered')) && isExpanded && (
+        {/* Подсказка при неверном ответе или при showAnswers */}
+        {(state.status === 'incorrect' || (showAnswers && state.status !== 'unanswered')) && (isExpanded || showAnswers) && explanation && (
           <div className={styles.content}>
-            <div className={styles.correctAnswer}>
-              <strong>Правильный ответ:</strong>
-              {renderCorrectAnswer?.() || <p>{correctAnswer}</p>}
+            <div className={styles.explanation}>
+              {explanation}
             </div>
-            {showExplanation && explanation && (
-              <div className={styles.explanation}>
-                {explanation}
-              </div>
-            )}
           </div>
         )}
 

@@ -1,3 +1,63 @@
+## 2026-02-24 Mobile fluid layout
+
+### 1. Адаптивная вёрстка для узких экранов (≤ 600px)
+- [x] App.css: `.app` padding 24→8, `.section` padding 24→8, margins и шрифты
+- [x] Article.module.css: `.article`, `.header`, `.body`, `.readerBody`, `.readerTimer` padding → 8px
+- [x] Quest.module.css: `.quest` margin, `.header`, `.content`, `.explanation` padding
+- [x] Test.module.css: `.test`, `.results` padding → 8px
+- [x] variants.module.css: `.option`, `.sortableItem`, `.matchItem/.dropZone`, `.blocksContainer`, `.blockButton`, `.promptTextarea`
+- [x] Profile.module.css: `.panel` width 95%, padding 16px
+- [x] Все цветные рамки (border) сохранены
+
+### Verification
+- `npm run build` — no errors ✓
+
+---
+
+## 2026-02-24 Quiz UX: hints, answers, profile reset
+
+### 1. Тест-режим: заголовок + дробь вместо прогрессбара
+- [x] Удалить прогрессбар `.progressBar` (track, fill, text) из Test.jsx и Test.module.css
+- [x] Добавить строку `.titleRow` с названием теста и дробью `answered/total`
+- [x] Добавить проп `title` в `TestContent` (default: «Тестовый режим») и в `Test`
+- [x] Обновить демо в App.jsx — `title="Основы React"`
+
+### 2. Чёрный шрифт на блоках PromptBuilder
+- [x] Добавить `color: var(--text-primary)` в `.blockButton` (variants.module.css)
+
+### 3. Сброс ответов при смене профиля
+- [x] В `selectProfile` очищать все ключи `quest_q_*` и `quest_t_*` из localStorage
+- [x] Добавить `questResetKey` в ProfileContext, инкрементировать при смене профиля
+- [x] Обернуть контентные секции в App.jsx в `<div key={questResetKey}>`
+
+### 4. Убрать зелёный блок «Правильный ответ»
+- [x] Удалить `renderCorrectAnswer` из Quest.jsx (проп + рендер)
+- [x] Удалить `.correctAnswer` CSS из Quest.module.css
+- [x] Удалить `renderCorrectAnswer` из всех вариантов: TrueFalse, MultipleChoice, FillTheBlank, Text, CodeBlock, OrderSteps, MatchPairs, SpotTheHallucination, PromptBuilder
+- [x] Удалить неиспользуемый компонент `MatchPairsResult`
+
+### 5. Правильные ответы в оранжевой подсказке
+- [x] Добавить `white-space: pre-line` в `.explanation`
+- [x] Каждый вариант формирует `fullExplanation` = `explanation + \n + правильный ответ`
+- [x] TrueFalse: «Верно» / «Неверно»
+- [x] MultipleChoice: правильные варианты через запятую
+- [x] FillTheBlank: правильное слово
+- [x] OrderSteps: цепочка через →
+- [x] PromptBuilder: цепочка через →
+- [x] MatchPairs: пары через →, по строке
+
+### 6. Исправить сравнение ответов (case-insensitive)
+- [x] MultipleChoice: `hash(item)` без normalizeAnswer при submit
+- [x] OrderSteps: `hash(item.text)` без normalizeAnswer при submit
+- [x] PromptBuilder: `hash(block)` без normalizeAnswer при submit
+- [x] FillTheBlank, Text, CodeBlock: submit raw value, checkAnswer через `normalizeAnswer()`
+- [x] MatchPairs: checkAnswer сравнивает с `correctPairsHash`
+
+### Verification
+- `npm run build` — no errors ✓
+
+---
+
 ## 2026-02-23 Profiles, sessions, leaderboards
 
 ### 1. bonus.json + utils/bonus.js

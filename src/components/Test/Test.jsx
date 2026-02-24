@@ -7,7 +7,7 @@ import styles from './Test.module.css';
 /**
  * TestContent — внутренний контент теста
  */
-function TestContent({ children, showProgress = true }) {
+function TestContent({ children, title = 'Тестовый режим', showProgress = true }) {
   const {
     state,
     questions,
@@ -31,16 +31,13 @@ function TestContent({ children, showProgress = true }) {
 
   return (
     <div className={styles.test}>
-      {/* Progress bar */}
-      {totalCount > 0 && isInProgress && (
-        <div className={styles.progressBar}>
-          <div className={styles.progressBarTrack}>
-            <div
-              className={styles.progressBarFill}
-              style={{ width: `${(answeredCount / totalCount) * 100}%` }}
-            />
-          </div>
-          <span className={styles.progressBarText}>{answeredCount}/{totalCount}</span>
+      {/* Заголовок с дробью */}
+      {isInProgress && (
+        <div className={styles.titleRow}>
+          <span className={styles.title}>{title}</span>
+          {totalCount > 0 && (
+            <span className={styles.fraction}>{answeredCount}/{totalCount}</span>
+          )}
         </div>
       )}
 
@@ -86,14 +83,14 @@ function TestContent({ children, showProgress = true }) {
             </div>
           </div>
 
-          {/* Кнопка показа правильных ответов */}
-          {showCorrectAnswers && !showAnswers && (
+          {/* Кнопка показа/скрытия правильных ответов */}
+          {showCorrectAnswers && (
             <button
               className={styles.showAnswersBtn}
-              onClick={() => setShowAnswers(true)}
+              onClick={() => setShowAnswers(prev => !prev)}
               type="button"
             >
-              Показать правильные ответы
+              {showAnswers ? 'Скрыть правильные ответы' : 'Показать правильные ответы'}
             </button>
           )}
         </div>
@@ -116,24 +113,25 @@ function TestContent({ children, showProgress = true }) {
 /**
  * Test — обёртка для теста
  */
-function Test({ 
-  id, 
-  limit = null, 
+function Test({
+  id,
+  title,
+  limit = null,
   showCorrectAnswers = true,
   showProgress = true,
   onTimeUp,
   onFinish,
-  children 
+  children
 }) {
   return (
-    <TestProvider 
-      id={id} 
+    <TestProvider
+      id={id}
       limit={limit}
       showCorrectAnswers={showCorrectAnswers}
       onTimeUp={onTimeUp}
       onFinish={onFinish}
     >
-      <TestContent showProgress={showProgress}>
+      <TestContent title={title} showProgress={showProgress}>
         {children}
       </TestContent>
     </TestProvider>

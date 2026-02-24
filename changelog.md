@@ -1,3 +1,52 @@
+## 2026-02-24 v0.2.3 — Mobile fluid layout
+
+### Адаптивная вёрстка (≤ 600px)
+- `.app` padding 24px → 8px, заголовок h1 28px → 22px
+- `.section` padding 24px → 8px, margin 32px → 12px
+- Article: `.article`, `.header`, `.body`, `.readerBody` padding → 8px
+- Quest: `.quest` margin, `.header`, `.content` padding уменьшены
+- Test: `.test`, `.results` padding → 8px
+- Variants: `.option`, `.sortableItem`, `.matchItem`, `.dropZone`, `.blocksContainer`, `.blockButton`, `.promptTextarea` — сжаты
+- Profile: `.panel` width 95%, padding 16px
+- Все цветные рамки (border) сохранены
+
+---
+
+## 2026-02-24 v0.2.2 — Quiz UX: hints, answers, profile reset
+
+### Тест-режим
+- Убран прогрессбар по количеству отвеченных вопросов
+- Добавлена строка заголовка с названием теста и дробью `answered/total` справа
+- Добавлен проп `title` для задания произвольного названия опросника (по умолчанию «Тестовый режим»)
+- Прогрессбар по времени (таймер) оставлен без изменений
+
+### Сброс при смене профиля
+- При смене профиля очищаются все ответы на вопросы (`quest_q_*`) и состояния тестов (`quest_t_*`) из localStorage
+- Дерево компонентов перемонтируется через `key={questResetKey}`
+
+### Подсказки вместо зелёного блока «Правильный ответ»
+- Полностью удалён зелёный блок `.correctAnswer` из Quest и его CSS
+- Удалён проп `renderCorrectAnswer` из Quest и всех вариантов вопросов
+- Удалён неиспользуемый компонент `MatchPairsResult`
+- Правильный ответ теперь отображается в оранжевой подсказке (`.explanation`) для всех типов:
+  - TrueFalse — «Верно» / «Неверно»
+  - MultipleChoice — правильные варианты через запятую
+  - FillTheBlank — правильное слово
+  - OrderSteps — цепочка шагов через →
+  - PromptBuilder — цепочка блоков через →
+  - MatchPairs — пары через →, по одной на строке
+- Добавлен `white-space: pre-line` на `.explanation`
+
+### Исправление сравнения ответов
+- MultipleChoice, OrderSteps, PromptBuilder — submit хэширует `hash(item)` без `normalizeAnswer`
+- FillTheBlank, Text, CodeBlock — submit передаёт сырое значение, `checkAnswer` через `normalizeAnswer()` (case-insensitive)
+- MatchPairs — `checkAnswer` сравнивает с `correctPairsHash` вместо пустого пропа
+
+### Стили
+- Добавлен `color: var(--text-primary)` на `.blockButton` в PromptBuilder (чёрный шрифт в тёмной теме)
+
+---
+
 ## 2026-02-24 v0.2.1 — Test progress, drag fix, contrast
 
 - Test shows questions one at a time with progress bar (2/10 style)

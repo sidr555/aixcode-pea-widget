@@ -16,8 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Quest from '../Quest';
-import { hash } from '../../../utils/hash';
-import { normalizeAnswer } from '../../../utils/normalize';
+import { hash, parseHashString } from '../../../utils/hash';
 import styles from './variants.module.css';
 
 /**
@@ -110,7 +109,7 @@ function OrderSteps({
 
   const renderAnswer = useCallback(({ onSubmit }) => {
     const handleSubmit = () => {
-      const answerHash = shuffledItems.map(item => hash(normalizeAnswer(item.text))).join('|');
+      const answerHash = shuffledItems.map(item => hash(item.text)).join('|');
       onSubmit(answerHash);
     };
 
@@ -144,32 +143,27 @@ function OrderSteps({
     );
   }, [shuffledItems, sensors, handleDragEnd]);
 
-  const renderCorrectAnswer = useCallback(() => {
-    // Парсим правильный порядок из хэшей
-    const correctHashes = correctAnswer.split('|');
-    const correctItems = correctHashes.map(hashStr => {
-      return items.find(item => hash(normalizeAnswer(item)) === hashStr);
-    }).filter(Boolean);
+  const fullExplanation = useMemo(() => {
+    const correctHashes = parseHashString(correctAnswer);
+    const correctItems = correctHashes.map(h =>
+      items.find(item => hash(item) === h)
+    ).filter(Boolean);
 
-    return (
-      <ol className={styles.correctOrderList}>
-        {correctItems.map((item, idx) => (
-          <li key={idx}>{item}</li>
-        ))}
-      </ol>
-    );
-  }, [correctAnswer, items]);
+    const chain = correctItems.join(' → ');
+    return chain
+      ? (explanation ? `${explanation}\n${chain}` : chain)
+      : explanation;
+  }, [correctAnswer, items, explanation]);
 
   return (
     <Quest
       id={id}
       question={question}
       correctAnswer={correctAnswer}
-      explanation={explanation}
+      explanation={fullExplanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

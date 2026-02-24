@@ -106,9 +106,23 @@ export function ProfileProvider({ children }) {
     }
   }, [activeProfileId]);
 
+  const [questResetKey, setQuestResetKey] = useState(0);
+
   const selectProfile = useCallback((id) => {
+    // Clear all quest/test answers from localStorage
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith('quest_q_') || k.startsWith('quest_t_'))) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+
     setActiveProfileId(id);
     setNeedsProfile(false);
+    // Bump key to force remount of all quest/test components
+    setQuestResetKey(prev => prev + 1);
   }, []);
 
   const openProfileSelector = useCallback(() => {
@@ -154,6 +168,7 @@ export function ProfileProvider({ children }) {
     activeProfile,
     activeProfileId,
     needsProfile,
+    questResetKey,
     createProfile,
     deleteProfile,
     selectProfile,
@@ -161,7 +176,7 @@ export function ProfileProvider({ children }) {
     updateProfileStats,
     addSession,
     updateProfileField,
-  }), [profiles, activeProfile, activeProfileId, needsProfile, createProfile, deleteProfile, selectProfile, openProfileSelector, updateProfileStats, addSession, updateProfileField]);
+  }), [profiles, activeProfile, activeProfileId, needsProfile, questResetKey, createProfile, deleteProfile, selectProfile, openProfileSelector, updateProfileStats, addSession, updateProfileField]);
 
   return (
     <ProfileContext.Provider value={value}>
@@ -175,6 +190,7 @@ export function useProfile() {
   if (!ctx) {
     return {
       profiles: [], activeProfile: null, activeProfileId: null, needsProfile: true,
+      questResetKey: 0,
       createProfile: () => {}, deleteProfile: () => {}, selectProfile: () => {},
       openProfileSelector: () => {}, updateProfileStats: () => {}, addSession: () => {},
       updateProfileField: () => {},

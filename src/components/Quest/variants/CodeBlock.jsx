@@ -1,6 +1,5 @@
 import { useState, useCallback, memo } from 'react';
 import Quest from '../Quest';
-import { hash } from '../../../utils/hash';
 import { normalizeAnswer } from '../../../utils/normalize';
 import styles from './variants.module.css';
 
@@ -25,15 +24,12 @@ function CodeBlock({
   }, []);
 
   const checkAnswer = useCallback((answer) => {
-    const normalizedCorrect = normalizeAnswer(correctAnswer);
-    const normalizedUser = normalizeAnswer(answer);
-    return hash(normalizedUser) === hash(normalizedCorrect);
+    return normalizeAnswer(answer) === normalizeAnswer(correctAnswer);
   }, [correctAnswer]);
 
   const renderAnswer = useCallback(({ onSubmit }) => {
     const handleSubmit = () => {
-      const answerHash = hash(normalizeAnswer(value));
-      onSubmit(answerHash);
+      onSubmit(value);
     };
 
     return (
@@ -61,24 +57,15 @@ function CodeBlock({
     );
   }, [placeholder, value]);
 
-  const renderCorrectAnswer = useCallback(() => {
-    return (
-      <pre className={styles.correctCode}>
-        <code>{correctAnswer}</code>
-      </pre>
-    );
-  }, [correctAnswer]);
-
   return (
     <Quest
       id={id}
       question={question}
-      correctAnswer={hash(normalizeAnswer(correctAnswer))}
+      correctAnswer={correctAnswer}
       explanation={explanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

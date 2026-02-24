@@ -1,6 +1,5 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import Quest from '../Quest';
-import { hash } from '../../../utils/hash';
 import { normalizeAnswer } from '../../../utils/normalize';
 import styles from './variants.module.css';
 
@@ -25,15 +24,12 @@ function FillTheBlank({
   }, []);
 
   const checkAnswer = useCallback((answer) => {
-    const normalizedCorrect = normalizeAnswer(correctAnswer);
-    const normalizedUser = normalizeAnswer(answer);
-    return hash(normalizedUser) === hash(normalizedCorrect);
+    return normalizeAnswer(answer) === normalizeAnswer(correctAnswer);
   }, [correctAnswer]);
 
   const renderAnswer = useCallback(({ onSubmit }) => {
     const handleSubmit = () => {
-      const answerHash = hash(normalizeAnswer(value));
-      onSubmit(answerHash);
+      onSubmit(value);
     };
 
     const handleKeyDown = (e) => {
@@ -65,24 +61,19 @@ function FillTheBlank({
     );
   }, [placeholder, value]);
 
-  const renderCorrectAnswer = useCallback(() => {
-    return (
-      <p className={styles.correctText}>
-        {correctAnswer}
-      </p>
-    );
-  }, [correctAnswer]);
+  const fullExplanation = useMemo(() => {
+    return explanation ? `${explanation}\n${correctAnswer}` : correctAnswer;
+  }, [explanation, correctAnswer]);
 
   return (
     <Quest
       id={id}
       question={question}
-      correctAnswer={hash(normalizeAnswer(correctAnswer))}
-      explanation={explanation}
+      correctAnswer={correctAnswer}
+      explanation={fullExplanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

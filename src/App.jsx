@@ -21,17 +21,17 @@ import { useTheme } from './components/Theme/ThemeContext';
 import './App.css';
 import ai1 from './art/ai-1.md?raw';
 import ai2 from './art/ai-2.md?raw';
-// import ai3 from './art/ai-3.md';
-// import ai4 from './art/ai-4.md';
-// import ai5 from './art/ai-5.md';
-// import ai6 from './art/ai-6.md';
+import ai3 from './art/ai-3.md?raw';
+import ai4 from './art/ai-4.md?raw';
+import ai5 from './art/ai-5.md?raw';
+import ai6 from './art/ai-6.md?raw';
 
 
 /**
  * Демо-страница с примерами всех компонентов
  */
 function App() {
-  const { activeProfile, needsProfile } = useProfile();
+  const { activeProfile, needsProfile, questResetKey } = useProfile();
   const { colors } = useTheme();
 
   const badges = activeProfile ? [
@@ -62,6 +62,7 @@ function App() {
         {!activeProfile && <ThemeSelector />}
       </div>
 
+      <div key={questResetKey}>
       {/* ==================== СТАТЬИ ==================== */}
       <section className="section">
         <h2>Статьи</h2>
@@ -80,7 +81,7 @@ function App() {
           content={ai2}
         />
 
-      {/*  <Article
+        <Article
           id={hash("Скажи мне, кто я есть!" + "Камило Есенин")}
           author="Камило Есенин"
           title="Скажи мне, кто я есть!"
@@ -106,7 +107,7 @@ function App() {
           author="Убер Пестель"
           title="Твой друг-робот поможет учиться!"
           content={ai6}
-        />*/}
+        />
       </section>
 
       {/* ==================== INLINE РЕЖИМ ==================== */}
@@ -289,7 +290,7 @@ function App() {
       <section className="section">
         <h2>Тест-режим</h2>
 
-        <Test id="test-react-basics" limit="5m" showCorrectAnswers={true}>
+        <Test id="test-react-basics" title="Основы React" limit="5m" showCorrectAnswers={true}>
           <TrueFalse
             id="test-tf-1"
             question="React использует двустороннюю привязку данных"
@@ -349,6 +350,7 @@ function App() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }

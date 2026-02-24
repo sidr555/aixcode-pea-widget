@@ -141,32 +141,6 @@ function SpotTheHallucination({
     );
   }, [tokens, selectedIndices, selectedSet, handleToggle]);
 
-  const renderCorrectAnswer = useCallback(() => {
-    return (
-      <div className={styles.hallucination}>
-        <p className={styles.hint}>Правильные ответы:</p>
-        <div className={styles.textContainer}>
-          {tokens.map((token) => (
-            <WordToken
-              key={token.index}
-              token={token}
-              isSelected={selectedSet.has(token.index)}
-              onToggle={() => {}}
-              showCorrect={true}
-              isCorrect={correctSet.has(token.index)}
-            />
-          ))}
-        </div>
-        <div className={styles.legend}>
-          <span className={styles.correctLegend}>Зелёным</span> — слова-галлюцинации
-          {selectedIndices.some(i => !correctSet.has(i)) && (
-            <>, <span className={styles.incorrectLegend}>красным</span> — ошибочно отмеченные</>
-          )}
-        </div>
-      </div>
-    );
-  }, [tokens, selectedIndices, selectedSet, correctSet]);
-
   return (
     <Quest
       id={id}
@@ -176,7 +150,6 @@ function SpotTheHallucination({
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

@@ -163,86 +163,6 @@ const MatchPairsInput = memo(function MatchPairsInput({ pairs, shuffledRight, on
 });
 
 /**
- * MatchPairsResult — отображение результатов с подсветкой правильных/неправильных
- */
-const MatchPairsResult = memo(function MatchPairsResult({ pairs, shuffledRight, matches, reverseMatches, getPairColor, getPairResults }) {
-  const [correctColors] = useState(() => assignColors(pairs.length));
-  const results = getPairResults();
-
-  let wrongColorIdx = 0;
-  const wrongColors = {};
-  results.forEach((r) => {
-    if (!r.isCorrect) {
-      wrongColors[r.leftId] = correctColors[wrongColorIdx % correctColors.length];
-      wrongColorIdx++;
-    }
-  });
-
-  return (
-    <div className={styles.matchPairs}>
-      <div className={styles.matchContainer}>
-        <div className={styles.matchColumn}>
-          {pairs.map((pair) => {
-            const leftId = `left-${pair.left}`;
-            const result = results.find(r => r.leftId === leftId);
-            const isCorrect = result?.isCorrect;
-            const color = getPairColor(leftId);
-            const wrongColor = wrongColors[leftId];
-            const itemStyle = isCorrect && color
-              ? { borderColor: color, backgroundColor: `${color}22` }
-              : wrongColor
-                ? { borderColor: wrongColor, backgroundColor: `${wrongColor}15` }
-                : {};
-            return (
-              <div
-                key={leftId}
-                className={`${styles.matchItem} ${styles.matched}`}
-                style={itemStyle}
-              >
-                <span className={isCorrect ? styles.resultCorrectIcon : styles.resultIncorrectIcon}>
-                  {isCorrect ? '✓' : '✗'}
-                </span>
-                {pair.left}
-              </div>
-            );
-          })}
-        </div>
-
-        <div className={styles.matchColumn}>
-          {shuffledRight.map((item, idx) => {
-            const rightId = `right-${idx}`;
-            const matchedLeftId = reverseMatches[rightId];
-            const result = matchedLeftId ? results.find(r => r.leftId === matchedLeftId) : null;
-            const isCorrect = result?.isCorrect;
-            const color = matchedLeftId ? getPairColor(matchedLeftId) : undefined;
-            const wrongColor = matchedLeftId ? wrongColors[matchedLeftId] : undefined;
-            const itemStyle = isCorrect && color
-              ? { borderColor: color, backgroundColor: `${color}22`, borderStyle: 'solid' }
-              : wrongColor
-                ? { borderColor: wrongColor, backgroundColor: `${wrongColor}15`, borderStyle: 'solid' }
-                : {};
-            return (
-              <div
-                key={rightId}
-                className={`${styles.dropZone} ${matchedLeftId ? styles.hasMatch : ''}`}
-                style={itemStyle}
-              >
-                {matchedLeftId && (
-                  <span className={isCorrect ? styles.resultCorrectIcon : styles.resultIncorrectIcon}>
-                    {isCorrect ? '✓' : '✗'}
-                  </span>
-                )}
-                <span>{item}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-});
-
-/**
  * MatchPairs — соединить пары (термин - определение)
  */
 function MatchPairs({
@@ -258,94 +178,47 @@ function MatchPairs({
   const { pairs = [] } = options || {};
 
   const [shuffledRight, setShuffledRight] = useState(() => shuffleArray(pairs.map(p => p.right)));
-  // Matches хранится здесь для renderCorrectAnswer (после ответа)
-  const [submittedMatches, setSubmittedMatches] = useState({});
-
-  const [pairColors] = useState(() => assignColors(pairs.length));
-  const [colorAssignment, setColorAssignment] = useState({});
-
-  const reverseMatches = useMemo(() => {
-    const map = {};
-    for (const [leftId, rightId] of Object.entries(submittedMatches)) {
-      map[rightId] = leftId;
-    }
-    return map;
-  }, [submittedMatches]);
 
   const correctPairsHash = useMemo(() => {
     return pairs.map(p => `${hash(normalizeAnswer(p.left))}|${hash(normalizeAnswer(p.right))}`).join('||');
   }, [pairs]);
 
   const checkAnswer = useCallback((answer) => {
-    return answer === correctAnswer;
-  }, [correctAnswer]);
-
-  const getPairColor = useCallback((leftId) => {
-    const idx = colorAssignment[leftId];
-    if (idx === undefined) return undefined;
-    return pairColors[idx % pairColors.length];
-  }, [colorAssignment, pairColors]);
-
-  const getPairResults = useCallback(() => {
-    return pairs.map(p => {
-      const leftId = `left-${p.left}`;
-      const matchedRightId = submittedMatches[leftId];
-      const matchedRight = shuffledRight.find((_, idx) => `right-${idx}` === matchedRightId);
-      const isCorrect = matchedRight && normalizeAnswer(matchedRight) === normalizeAnswer(p.right);
-      return { leftId, matchedRightId, isCorrect };
-    });
-  }, [pairs, submittedMatches, shuffledRight]);
+    return answer === correctPairsHash;
+  }, [correctPairsHash]);
 
   const [inputKey, setInputKey] = useState(0);
 
   const renderAnswer = useCallback(({ onSubmit }) => {
-    const handleInputSubmit = (userPairsHash) => {
-      // Восстанавливаем matches из хэша, чтобы renderCorrectAnswer мог использовать
-      // Парсим обратно из формата hash|hash||hash|hash
-      // Проще: перехватываем submit и сохраняем matches до хэширования
-      onSubmit(userPairsHash);
-    };
-
     return (
       <MatchPairsInput
         key={inputKey}
         pairs={pairs}
         shuffledRight={shuffledRight}
-        onSubmit={handleInputSubmit}
+        onSubmit={onSubmit}
       />
     );
   }, [pairs, shuffledRight, inputKey]);
 
-  const renderCorrectAnswer = useCallback(() => {
-    return (
-      <MatchPairsResult
-        pairs={pairs}
-        shuffledRight={shuffledRight}
-        matches={submittedMatches}
-        reverseMatches={reverseMatches}
-        getPairColor={getPairColor}
-        getPairResults={getPairResults}
-      />
-    );
-  }, [pairs, shuffledRight, submittedMatches, reverseMatches, getPairColor, getPairResults]);
-
   const resetState = useCallback(() => {
-    setSubmittedMatches({});
-    setColorAssignment({});
     setShuffledRight(shuffleArray(pairs.map(p => p.right)));
     setInputKey(k => k + 1);
   }, [pairs]);
+
+  const fullExplanation = useMemo(() => {
+    const pairsList = pairs.map(p => `${p.left} → ${p.right}`).join('\n');
+    return explanation ? `${explanation}\n${pairsList}` : pairsList;
+  }, [pairs, explanation]);
 
   return (
     <Quest
       id={id}
       question={question}
       correctAnswer={correctPairsHash}
-      explanation={explanation}
+      explanation={fullExplanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

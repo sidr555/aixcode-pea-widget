@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import Quest from '../Quest';
 import { hash } from '../../../utils/hash';
 import styles from './variants.module.css';
@@ -71,25 +71,21 @@ function TrueFalse({
     );
   }, [selected, handleSelect]);
 
-  const renderCorrectAnswer = useCallback(() => {
+  const fullExplanation = useMemo(() => {
     const isTrue = normalizedCorrect === hash('true');
-    return (
-      <p className={styles.correctText}>
-        {isTrue ? '✓ Верно' : '✗ Неверно'}
-      </p>
-    );
-  }, [normalizedCorrect]);
+    const label = isTrue ? 'Верно' : 'Неверно';
+    return explanation ? `${explanation}\n${label}` : label;
+  }, [normalizedCorrect, explanation]);
 
   return (
     <Quest
       id={id}
       question={question}
       correctAnswer={normalizedCorrect}
-      explanation={explanation}
+      explanation={fullExplanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

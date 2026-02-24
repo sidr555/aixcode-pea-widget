@@ -61,7 +61,6 @@ export function TestProvider({
   const handleFinishTest = useCallback(() => {
     timer.stop();
     finish();
-    setShowAnswers(true);
     onFinish?.(state);
   }, [timer, finish, onFinish, state]);
 

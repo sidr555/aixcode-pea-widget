@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo, memo, useEffect, useRef } from 'react';
 import Quest from '../Quest';
 import { hash, parseHashString } from '../../../utils/hash';
-import { normalizeAnswer } from '../../../utils/normalize';
 import styles from './variants.module.css';
 
 /**
@@ -76,7 +75,7 @@ function PromptBuilder({
   const renderAnswer = useCallback(({ onSubmit }) => {
     const handleSubmit = () => {
       // Формируем хэш из порядка вставленных блоков
-      const answerHash = insertedBlocks.map(b => hash(normalizeAnswer(b))).join('|');
+      const answerHash = insertedBlocks.map(b => hash(b)).join('|');
       onSubmit(answerHash);
     };
 
@@ -137,37 +136,28 @@ function PromptBuilder({
     );
   }, [shuffledBlocks, insertedBlocks, textareaValue, blocks.length, handleBlockClick]);
 
-  const renderCorrectAnswer = useCallback(() => {
-    // Парсим правильный порядок из хэшей
+  // Build explanation with correct block chain appended
+  const fullExplanation = useMemo(() => {
     const correctHashes = parseHashString(correctAnswer);
-    const correctBlocks = correctHashes.map(hashStr => {
-      return blocks.find(block => hash(normalizeAnswer(block)) === hashStr);
-    }).filter(Boolean);
+    const correctBlocks = correctHashes.map(hashStr =>
+      blocks.find(block => hash(block) === hashStr)
+    ).filter(Boolean);
 
-    return (
-      <div className={styles.correctPrompt}>
-        <p className={styles.correctLabel}>Правильный порядок блоков:</p>
-        <ol className={styles.correctBlockList}>
-          {correctBlocks.map((block, idx) => (
-            <li key={idx} className={styles.correctBlockItem}>
-              {block}
-            </li>
-          ))}
-        </ol>
-      </div>
-    );
-  }, [correctAnswer, blocks]);
+    const chain = correctBlocks.join(' → ');
+    return chain
+      ? (explanation ? `${explanation}\n${chain}` : chain)
+      : explanation;
+  }, [correctAnswer, blocks, explanation]);
 
   return (
     <Quest
       id={id}
       question={question}
       correctAnswer={correctAnswer}
-      explanation={explanation}
+      explanation={fullExplanation}
       points={points}
       alwaysShowExplanation={alwaysShowExplanation}
       renderAnswer={renderAnswer}
-      renderCorrectAnswer={renderCorrectAnswer}
       checkAnswer={checkAnswer}
       onStatusChange={onStatusChange}
       onReset={resetState}

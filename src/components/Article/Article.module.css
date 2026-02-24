@@ -336,3 +336,28 @@
 :global(body.dark) .crownBtn:hover {
   background: #333;
 }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .article {
+    margin: 8px 0;
+    padding: 8px;
+  }
+
+  .header {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .body {
+    padding: 8px;
+  }
+
+  .readerBody {
+    padding: 8px;
+  }
+
+  .readerTimer {
+    padding: 4px 8px;
+  }
+}

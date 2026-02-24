@@ -79,19 +79,6 @@
   background: var(--bg-secondary);
 }
 
-.correctAnswer {
-  padding: 12px;
-  background: var(--bg-success);
-  border-radius: 4px;
-  margin-bottom: 12px;
-}
-
-.correctAnswer strong {
-  display: block;
-  margin-bottom: 8px;
-  color: #2e7d32;
-}
-
 .explanation {
   padding: 12px;
   background: var(--bg-warning);
@@ -99,6 +86,7 @@
   color: #e65100;
   font-size: calc(var(--article-font-size, 16px) - 2px);
   line-height: 1.5;
+  white-space: pre-line;
 }
 
 .resetBtn {
@@ -116,4 +104,24 @@
 .resetBtn:hover {
   background: var(--bg-hover);
   color: #333;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .quest {
+    margin: 8px 0;
+  }
+
+  .header {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .content {
+    padding: 8px;
+  }
+
+  .explanation {
+    padding: 8px;
+  }
 }
