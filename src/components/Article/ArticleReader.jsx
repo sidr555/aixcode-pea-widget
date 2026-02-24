@@ -172,7 +172,7 @@ function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
   ) : null;
 
   const bodyContent = isExpanded ? (
-    <div className={styles.readerBody}>
+    <div className={`${styles.readerBody} ${phase === 'picking' ? styles.readerBodyPicking : ''}`}>
       {tokens.map((token, i) => {
         if (!token.isSignificant) {
           return <span key={i}>{token.text}</span>;
@@ -195,7 +195,7 @@ function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
     </div>
   ) : null;
 
-  return children({ control, progressBar, bodyContent });
+  return children({ control, progressBar, bodyContent, phase });
 }
 
 export default memo(ArticleReader);

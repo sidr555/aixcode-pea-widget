@@ -49,6 +49,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
   const toggleExpanded = useCallback(() => {
     const newState = !isExpanded;
     setIsExpanded(newState);
+    setShowLeaderboard(false);
     const storageKey = `article_expanded_${title}`;
     if (typeof window !== "undefined" && window.localStorage) localStorage.setItem(storageKey, String(newState));
   }, [isExpanded, title]);
@@ -57,6 +58,8 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
     if (articleId) {
       addSession(articleId, wordCount);
       setSessionCount(prev => prev + 1);
+      setShowLeaderboard(true);
+      setIsExpanded(true);
     }
   }, [articleId, addSession]);
 
@@ -80,7 +83,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
 
   return (
     <ArticleReader body={content.body || ''} duration={duration} onSessionComplete={handleSessionComplete}>
-      {({ control, progressBar, bodyContent }) => (
+      {({ control, progressBar, bodyContent, phase }) => (
         <article className={styles.article}>
           <div
             className={styles.header}
@@ -115,7 +118,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
           {progressBar}
           {bodyContent}
 
-          {isExpanded && (
+          {isExpanded && !bodyContent && (
             <div className={styles.body}>
               {showLeaderboard ? (
                 <ArticleLeaderboard articleId={articleId} />

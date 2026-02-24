@@ -222,10 +222,18 @@
 .readerBody {
   margin-top: 12px;
   padding: 16px;
+  border: 2px solid transparent;
   border-top: 1px solid var(--border-color, #e0e0e0);
   line-height: 1.8;
   color: var(--text-primary, #333);
   font-size: var(--article-font-size, 16px);
+  border-radius: 0 0 6px 6px;
+  transition: border-color 0.2s;
+}
+
+.readerBodyPicking {
+  border-color: #e53935;
+  border-top-color: #e53935;
 }
 
 /* Слова */

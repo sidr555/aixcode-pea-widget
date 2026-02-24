@@ -218,3 +218,27 @@ Profile context in localStorage, selection overlay.
 
 ### Verification
 - `npm run build` — no errors ✓
+
+---
+
+## 2026-02-24 Reading mode fixes
+
+### 1. Fix duplicate text in reading mode
+- Added `!bodyContent` condition to markdown body block
+- When reader is active (reading/picking), only reader body shows
+- When reader is idle/done, normal body shows
+- Done
+
+### 2. Red border on picking phase
+- `.readerBody` gets `border: 2px solid transparent` base
+- `.readerBodyPicking` sets `border-color: #e53935`
+- ArticleReader passes `phase` in render-props
+- Done
+
+### 3. Leaderboard after session, text on toggle
+- `handleSessionComplete` sets `showLeaderboard = true` and `isExpanded = true`
+- `toggleExpanded` resets `showLeaderboard = false`
+- Done
+
+### Verification
+- `npm run build` — no errors ✓

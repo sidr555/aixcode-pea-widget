@@ -1,3 +1,10 @@
+## 2026-02-24 v0.1.9 — Reading mode fixes
+
+- Fixed duplicate text in reading mode (reader body + markdown shown together)
+- Red border around text when timer ends (picking phase)
+- Leaderboard opens automatically after session completes
+- Collapsing/expanding article resets to text mode
+
 ## 2026-02-24 v0.1.8 — Fix nested buttons, profile form
 
 - Fixed button-in-button nesting in article header (caused hydration error)
