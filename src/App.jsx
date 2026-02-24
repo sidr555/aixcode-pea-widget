@@ -25,6 +25,12 @@ import ai3 from './art/ai-3.md?raw';
 import ai4 from './art/ai-4.md?raw';
 import ai5 from './art/ai-5.md?raw';
 import ai6 from './art/ai-6.md?raw';
+import testAi1 from './art/test/ai-1.json';
+import testAi2 from './art/test/ai-2.json';
+import testAi3 from './art/test/ai-3.json';
+import testAi4 from './art/test/ai-4.json';
+import testAi5 from './art/test/ai-5.json';
+import testAi6 from './art/test/ai-6.json';
 
 
 /**
@@ -72,6 +78,7 @@ function App() {
           author="Че Блок"
           title="Нейросеть научилась нагло врать!"
           content={ai1}
+          testData={testAi1}
         />
 
         <Article
@@ -79,6 +86,7 @@ function App() {
           author="Фидель Ахматова"
           title="Твой робот делает фальшивые фото!"
           content={ai2}
+          testData={testAi2}
         />
 
         <Article
@@ -86,6 +94,7 @@ function App() {
           author="Камило Есенин"
           title="Скажи мне, кто я есть!"
           content={ai3}
+          testData={testAi3}
         />
 
         <Article
@@ -93,6 +102,7 @@ function App() {
           author="Рауль Пастернак"
           title="Строгий приказ для непослушной машины!"
           content={ai4}
+          testData={testAi4}
         />
 
         <Article
@@ -100,6 +110,7 @@ function App() {
           author="Франк Волконский"
           title="У железного друга нет сердца!"
           content={ai5}
+          testData={testAi5}
         />
 
         <Article
@@ -107,6 +118,7 @@ function App() {
           author="Убер Пестель"
           title="Твой друг-робот поможет учиться!"
           content={ai6}
+          testData={testAi6}
         />
       </section>
 
