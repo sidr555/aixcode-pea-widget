@@ -266,3 +266,28 @@ Profile context in localStorage, selection overlay.
 
 ### Verification
 - `npm run build` — no errors ✓
+
+---
+
+## 2026-02-24 Test progress, drag fix, contrast
+
+### 1. Test — progress bar and one-at-a-time questions
+- Added progress bar with reading-session style (track + fill + text)
+- Shows `answeredCount/totalCount` during in_progress
+- Questions rendered via `display: none` to keep all registered in context
+- Only current question visible during test; all shown when reviewing
+- Done
+
+### 2. OrderSteps — fix drag-and-drop
+- Items now have stable IDs (`s-0`, `s-1`, ...) instead of index-based
+- `handleDragEnd` finds items by stable ID, not by `item-${idx}`
+- Items stored as `{ id, text }` objects
+- SortableItem renders `item.text`
+- Done
+
+### 3. PromptBuilder — contrast text
+- `.blocksLabel` color changed from `--text-secondary` to `--text-primary`
+- Done
+
+### Verification
+- `npm run build` — no errors ✓

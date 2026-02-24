@@ -1,3 +1,10 @@
+## 2026-02-24 v0.2.1 — Test progress, drag fix, contrast
+
+- Test shows questions one at a time with progress bar (2/10 style)
+- All questions shown together only when reviewing results
+- Fixed OrderSteps drag-and-drop not reordering (stable IDs)
+- "Доступные блоки" label uses contrasting text color
+
 ## 2026-02-24 v0.2.0 — Header badges, reader flow
 
 - Header badge font size 12px → 18px (1.5x)

@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -48,7 +48,7 @@ function SortableItem({ id, item }) {
       {...listeners}
     >
       <span className={styles.dragHandle}>☰</span>
-      <span>{item}</span>
+      <span>{item.text}</span>
     </div>
   );
 }
@@ -67,25 +67,24 @@ function OrderSteps({
   onStatusChange
 }) {
   const { items = [] } = options || {};
-  
-  // Перемешиваем элементы при первом рендере
-  const [shuffledItems, setShuffledItems] = useState(() => {
-    const shuffled = [...items];
+
+  // Stable items with unique IDs
+  const stableItems = useMemo(() => items.map((text, i) => ({ id: `s-${i}`, text })), [items]);
+
+  const shuffle = useCallback((arr) => {
+    const shuffled = [...arr];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
-  });
+  }, []);
+
+  const [shuffledItems, setShuffledItems] = useState(() => shuffle(stableItems));
 
   const resetState = useCallback(() => {
-    const shuffled = [...items];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    setShuffledItems(shuffled);
-  }, [items]);
+    setShuffledItems(shuffle(stableItems));
+  }, [stableItems, shuffle]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -96,14 +95,13 @@ function OrderSteps({
 
   const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-    if (active.id !== over.id) {
-      setShuffledItems((items) => {
-        const oldIndex = items.findIndex((_, idx) => `item-${idx}` === active.id);
-        const newIndex = items.findIndex((_, idx) => `item-${idx}` === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
+    setShuffledItems((prev) => {
+      const oldIndex = prev.findIndex(item => item.id === active.id);
+      const newIndex = prev.findIndex(item => item.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
   }, []);
 
   const checkAnswer = useCallback((answer) => {
@@ -112,7 +110,7 @@ function OrderSteps({
 
   const renderAnswer = useCallback(({ onSubmit }) => {
     const handleSubmit = () => {
-      const answerHash = shuffledItems.map(item => hash(normalizeAnswer(item))).join('|');
+      const answerHash = shuffledItems.map(item => hash(normalizeAnswer(item.text))).join('|');
       onSubmit(answerHash);
     };
 
@@ -125,12 +123,12 @@ function OrderSteps({
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={shuffledItems.map((_, idx) => `item-${idx}`)}
+            items={shuffledItems.map(item => item.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className={styles.sortableList}>
-              {shuffledItems.map((item, idx) => (
-                <SortableItem key={`item-${idx}`} id={`item-${idx}`} item={item} />
+              {shuffledItems.map((item) => (
+                <SortableItem key={item.id} id={item.id} item={item} />
               ))}
             </div>
           </SortableContext>

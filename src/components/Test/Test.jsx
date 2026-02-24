@@ -1,4 +1,4 @@
-import { useMemo, memo } from 'react';
+import { useMemo, Children, memo } from 'react';
 import { TestProvider, useTest } from './TestContext';
 import Timer from './Timer';
 import Score from '../Score/Score';
@@ -8,19 +8,42 @@ import styles from './Test.module.css';
  * TestContent — внутренний контент теста
  */
 function TestContent({ children, showProgress = true }) {
-  const { 
-    state, 
-    results, 
-    showAnswers, 
+  const {
+    state,
+    questions,
+    results,
+    showAnswers,
     showCorrectAnswers,
-    finishTest, 
-    setShowAnswers 
+    finishTest,
+    setShowAnswers
   } = useTest();
 
   const isFinished = state.status === 'finished';
+  const isInProgress = state.status === 'in_progress' || state.status === 'not_started';
+
+  // Count answered questions
+  const answeredCount = questions.filter(q => q.answered).length;
+  const totalCount = questions.length;
+
+  // Show one question at a time during test, all questions when reviewing
+  const childArray = Children.toArray(children);
+  const currentIndex = answeredCount < totalCount ? answeredCount : totalCount - 1;
 
   return (
     <div className={styles.test}>
+      {/* Progress bar */}
+      {totalCount > 0 && isInProgress && (
+        <div className={styles.progressBar}>
+          <div className={styles.progressBarTrack}>
+            <div
+              className={styles.progressBarFill}
+              style={{ width: `${(answeredCount / totalCount) * 100}%` }}
+            />
+          </div>
+          <span className={styles.progressBarText}>{answeredCount}/{totalCount}</span>
+        </div>
+      )}
+
       {/* Прогресс и таймер */}
       {showProgress && state.status !== 'not_started' && (
         <div className={styles.header}>
@@ -31,9 +54,15 @@ function TestContent({ children, showProgress = true }) {
         </div>
       )}
 
-      {/* Вопросы */}
+      {/* Вопросы: один за раз во время теста, все при просмотре */}
       <div className={styles.questions}>
-        {children}
+        {isInProgress
+          ? childArray.map((child, i) => (
+              <div key={i} style={i === currentIndex ? undefined : { display: 'none' }}>
+                {child}
+              </div>
+            ))
+          : children}
       </div>
 
       {/* Результаты */}
@@ -45,7 +74,7 @@ function TestContent({ children, showProgress = true }) {
               {results.percentage}%
             </div>
           </div>
-          
+
           <div className={styles.stats}>
             <div className={styles.stat}>
               <span className={styles.statLabel}>Правильных ответов:</span>
@@ -59,7 +88,7 @@ function TestContent({ children, showProgress = true }) {
 
           {/* Кнопка показа правильных ответов */}
           {showCorrectAnswers && !showAnswers && (
-            <button 
+            <button
               className={styles.showAnswersBtn}
               onClick={() => setShowAnswers(true)}
               type="button"
@@ -72,7 +101,7 @@ function TestContent({ children, showProgress = true }) {
 
       {/* Кнопка завершения (если не все отвечены) */}
       {state.status === 'in_progress' && !isFinished && (
-        <button 
+        <button
           className={styles.finishBtn}
           onClick={finishTest}
           type="button"
