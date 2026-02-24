@@ -242,3 +242,27 @@ Profile context in localStorage, selection overlay.
 
 ### Verification
 - `npm run build` — no errors ✓
+
+---
+
+## 2026-02-24 Header badges, reader flow
+
+### 1. Badge font size
+- `.badge` font-size `12px` → `18px` (1.5× increase)
+- Done
+
+### 2. Progress bar visibility
+- Changed from `phase !== 'idle'` to `phase === 'reading' || phase === 'picking'`
+- Bar hidden when article collapsed or session done
+- Done
+
+### 3. Remove reset button, reader lifecycle
+- Removed ↻ button from done phase control
+- Removed `.readerResetBtn` CSS
+- ArticleReader exposes `reset` function in render-props
+- `toggleExpanded` and `toggleLeaderboard` call `reset` via ref
+- Reader returns to idle → shows "Читать" on collapse or mode switch
+- Done
+
+### Verification
+- `npm run build` — no errors ✓

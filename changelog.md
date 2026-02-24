@@ -1,3 +1,11 @@
+## 2026-02-24 v0.2.0 — Header badges, reader flow
+
+- Header badge font size 12px → 18px (1.5x)
+- Progress bar hidden on collapse and after session done
+- Removed reset (↻) button from reader
+- Reader resets to "Читать" on collapse or leaderboard toggle
+- Result shown in header during done phase, "Читать" when idle
+
 ## 2026-02-24 v0.1.9 — Reading mode fixes
 
 - Fixed duplicate text in reading mode (reader body + markdown shown together)

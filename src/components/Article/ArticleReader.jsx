@@ -135,13 +135,6 @@ function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
           <span className={styles.readerResultCount} style={{ color: colors.primary }}>
             {pluralWords(wordCount)}
           </span>
-          <button
-            className={styles.readerResetBtn}
-            onClick={(e) => { e.stopPropagation(); handleReset(); }}
-            type="button"
-          >
-            ↻
-          </button>
         </div>
       );
     }
@@ -149,9 +142,10 @@ function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
     return null;
   })();
 
-  // Прогрессбар (отдельно, ниже заголовка) — остаётся видимым после окончания таймера
+  // Прогрессбар — виден только при reading и picking
   const isReading = phase === 'reading';
-  const progressBar = phase !== 'idle' ? (
+  const showBar = phase === 'reading' || phase === 'picking';
+  const progressBar = showBar ? (
     <div
       className={styles.readerTimer}
       onClick={isReading ? handleStopEarly : undefined}
@@ -195,7 +189,7 @@ function ArticleReader({ body, duration = 60, onSessionComplete, children }) {
     </div>
   ) : null;
 
-  return children({ control, progressBar, bodyContent, phase });
+  return children({ control, progressBar, bodyContent, phase, reset: handleReset });
 }
 
 export default memo(ArticleReader);

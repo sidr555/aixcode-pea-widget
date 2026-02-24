@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '../Theme/ThemeContext';
 import { useProfile } from '../Profile/ProfileContext';
@@ -12,6 +12,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
   const { addSession, activeProfileId } = useProfile();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const readerResetRef = useRef(null);
 
   // Парсим содержимое при получении
   const content = rawContent ? parseArticle(rawContent) : null;
@@ -50,6 +51,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
     const newState = !isExpanded;
     setIsExpanded(newState);
     setShowLeaderboard(false);
+    readerResetRef.current?.();
     const storageKey = `article_expanded_${title}`;
     if (typeof window !== "undefined" && window.localStorage) localStorage.setItem(storageKey, String(newState));
   }, [isExpanded, title]);
@@ -66,6 +68,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
   const toggleLeaderboard = useCallback((e) => {
     e.stopPropagation();
     setShowLeaderboard(prev => !prev);
+    readerResetRef.current?.();
     if (!isExpanded) {
       setIsExpanded(true);
       const storageKey = `article_expanded_${title}`;
@@ -83,7 +86,9 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
 
   return (
     <ArticleReader body={content.body || ''} duration={duration} onSessionComplete={handleSessionComplete}>
-      {({ control, progressBar, bodyContent, phase }) => (
+      {({ control, progressBar, bodyContent, phase, reset }) => {
+        readerResetRef.current = reset;
+        return (
         <article className={styles.article}>
           <div
             className={styles.header}
@@ -132,7 +137,8 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
             </div>
           )}
         </article>
-      )}
+        );
+      }}
     </ArticleReader>
   );
 }
