@@ -183,13 +183,14 @@ Profile context in localStorage, selection overlay.
 ## 2026-02-24 Fix profile form, gender buttons
 
 ### 1. ProfileSelector — fix readonly inputs
-- Added `onInput` handler alongside `onChange` for name/surname fields
-- Added `onClick={e => e.stopPropagation()}` on form to prevent event bubbling
+- Switched name/surname/birthDate from controlled (`value`+`onChange`) to uncontrolled (`ref`)
+- Form data collected via refs at submit time
+- Gender kept as separate state (needed for button highlight)
 - Done
 
 ### 2. ProfileSelector — gender toggle buttons
-- Replaced `<select>` dropdown with 3 `<button>` elements: он, она, оно
-- Gender values: `m`, `f`, `n`
+- Replaced `<select>` dropdown with 2 `<button>` elements: мальчик, девочка
+- Gender values: `m`, `f`
 - Click toggles selection (click again to deselect)
 - Active button uses theme color background, white text
 - Done

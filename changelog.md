@@ -1,7 +1,7 @@
 ## 2026-02-24 v0.1.7 — Fix profile form, gender buttons
 
-- Fixed name/surname inputs being unresponsive (added onInput + stopPropagation)
-- Replaced gender dropdown with 3 toggle buttons: он, она, оно
+- Fixed name/surname inputs by switching to uncontrolled refs
+- Gender buttons: мальчик / девочка (removed оно)
 - Active gender button uses theme color background
 
 ## 2026-02-23 v0.1.6 — Persistent timer bar

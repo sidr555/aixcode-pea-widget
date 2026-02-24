@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, useRef, memo } from 'react';
 import { useProfile } from './ProfileContext';
 import { useTheme } from '../Theme/ThemeContext';
 import styles from './Profile.module.css';
@@ -14,7 +14,10 @@ function ProfileSelector() {
   const { colors } = useTheme();
   const [expandedId, setExpandedId] = useState(null);
   const [showForm, setShowForm] = useState(profiles.length === 0);
-  const [form, setForm] = useState({ name: '', surname: '', birthDate: '', gender: '' });
+  const [gender, setGender] = useState('');
+  const nameRef = useRef(null);
+  const surnameRef = useRef(null);
+  const birthRef = useRef(null);
 
   if (!needsProfile) return null;
 
@@ -35,15 +38,16 @@ function ProfileSelector() {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    if (!form.name.trim()) return;
+    const name = nameRef.current?.value?.trim() || '';
+    if (!name) return;
     const profile = createProfile({
-      name: form.name.trim(),
-      surname: form.surname.trim(),
-      birthDate: form.birthDate,
-      gender: form.gender,
+      name,
+      surname: surnameRef.current?.value?.trim() || '',
+      birthDate: birthRef.current?.value || '',
+      gender,
     });
     selectProfile(profile.id);
-    setForm({ name: '', surname: '', birthDate: '', gender: '' });
+    setGender('');
     setShowForm(false);
   };
 
@@ -108,40 +112,35 @@ function ProfileSelector() {
         </div>
 
         {showForm && (
-          <form className={styles.form} onSubmit={handleCreate} onClick={e => e.stopPropagation()}>
+          <form className={styles.form} onSubmit={handleCreate}>
             <input
+              ref={nameRef}
               className={styles.input}
               type="text"
               placeholder="Имя *"
-              value={form.name}
-              onInput={e => setForm(f => ({ ...f, name: e.target.value }))}
-              onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               autoFocus
               required
             />
             <input
+              ref={surnameRef}
               className={styles.input}
               type="text"
               placeholder="Фамилия"
-              value={form.surname}
-              onInput={e => setForm(f => ({ ...f, surname: e.target.value }))}
-              onChange={e => setForm(f => ({ ...f, surname: e.target.value }))}
             />
             <input
+              ref={birthRef}
               className={styles.input}
               type="date"
               placeholder="Дата рождения"
-              value={form.birthDate}
-              onChange={e => setForm(f => ({ ...f, birthDate: e.target.value }))}
             />
             <div className={styles.genderRow}>
-              {[['m', 'он'], ['f', 'она'], ['n', 'оно']].map(([val, label]) => (
+              {[['m', 'мальчик'], ['f', 'девочка']].map(([val, label]) => (
                 <button
                   key={val}
                   type="button"
-                  className={`${styles.genderBtn} ${form.gender === val ? styles.genderBtnActive : ''}`}
-                  style={form.gender === val ? { backgroundColor: colors.primary, borderColor: colors.primary } : undefined}
-                  onClick={() => setForm(f => ({ ...f, gender: f.gender === val ? '' : val }))}
+                  className={`${styles.genderBtn} ${gender === val ? styles.genderBtnActive : ''}`}
+                  style={gender === val ? { backgroundColor: colors.primary, borderColor: colors.primary } : undefined}
+                  onClick={() => setGender(g => g === val ? '' : val)}
                 >
                   {label}
                 </button>
