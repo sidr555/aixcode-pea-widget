@@ -204,3 +204,17 @@ Profile context in localStorage, selection overlay.
 
 ### Verification
 - `npm run build` — no errors ✓
+
+---
+
+## 2026-02-24 Fix nested buttons, profile form
+
+### 1. Article.jsx — fix button-in-button nesting
+- Article header `<button>` → `<div role="button" tabIndex={0}>`
+- Inner buttons (Читать, crown) no longer nested inside a `<button>`
+- Fixes React hydration error: `<button> cannot be a descendant of <button>`
+- This was the root cause of broken profile form inputs
+- Done
+
+### Verification
+- `npm run build` — no errors ✓

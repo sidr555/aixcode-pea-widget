@@ -1,6 +1,12 @@
+## 2026-02-24 v0.1.8 — Fix nested buttons, profile form
+
+- Fixed button-in-button nesting in article header (caused hydration error)
+- Article header changed from `<button>` to `<div role="button">`
+- Gender buttons: мальчик / девочка (removed оно)
+
 ## 2026-02-24 v0.1.7 — Fix profile form, gender buttons
 
-- Fixed name/surname inputs by switching to uncontrolled refs
+- Switched profile form inputs to uncontrolled refs
 - Gender buttons: мальчик / девочка (removed оно)
 - Active gender button uses theme color background
 

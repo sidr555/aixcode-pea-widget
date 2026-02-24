@@ -82,10 +82,11 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
     <ArticleReader body={content.body || ''} duration={duration} onSessionComplete={handleSessionComplete}>
       {({ control, progressBar, bodyContent }) => (
         <article className={styles.article}>
-          <button
+          <div
             className={styles.header}
             onClick={toggleExpanded}
-            type="button"
+            role="button"
+            tabIndex={0}
             style={{ borderColor: isExpanded ? colors.primary : 'transparent' }}
           >
             <div className={styles.headerContent}>
@@ -109,7 +110,7 @@ function Article({ id: articleId, author, title, content: rawContent, duration }
               )}
               <span className={styles.arrow}>{isExpanded ? '▲' : '▼'}</span>
             </div>
-          </button>
+          </div>
 
           {progressBar}
           {bodyContent}
