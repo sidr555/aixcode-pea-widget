@@ -108,12 +108,13 @@ function ProfileSelector() {
         </div>
 
         {showForm && (
-          <form className={styles.form} onSubmit={handleCreate}>
+          <form className={styles.form} onSubmit={handleCreate} onClick={e => e.stopPropagation()}>
             <input
               className={styles.input}
               type="text"
               placeholder="Имя *"
               value={form.name}
+              onInput={e => setForm(f => ({ ...f, name: e.target.value }))}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               autoFocus
               required
@@ -123,6 +124,7 @@ function ProfileSelector() {
               type="text"
               placeholder="Фамилия"
               value={form.surname}
+              onInput={e => setForm(f => ({ ...f, surname: e.target.value }))}
               onChange={e => setForm(f => ({ ...f, surname: e.target.value }))}
             />
             <input
@@ -132,15 +134,19 @@ function ProfileSelector() {
               value={form.birthDate}
               onChange={e => setForm(f => ({ ...f, birthDate: e.target.value }))}
             />
-            <select
-              className={styles.input}
-              value={form.gender}
-              onChange={e => setForm(f => ({ ...f, gender: e.target.value }))}
-            >
-              <option value="">Пол</option>
-              <option value="m">Мужской</option>
-              <option value="f">Женский</option>
-            </select>
+            <div className={styles.genderRow}>
+              {[['m', 'он'], ['f', 'она'], ['n', 'оно']].map(([val, label]) => (
+                <button
+                  key={val}
+                  type="button"
+                  className={`${styles.genderBtn} ${form.gender === val ? styles.genderBtnActive : ''}`}
+                  style={form.gender === val ? { backgroundColor: colors.primary, borderColor: colors.primary } : undefined}
+                  onClick={() => setForm(f => ({ ...f, gender: f.gender === val ? '' : val }))}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <button
               className={styles.createBtn}
               type="submit"
